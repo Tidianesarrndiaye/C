@@ -1,0 +1,4 @@
+Tidiane;15.5
+Awa;17.0
+Moussa;12.5
+Fatou;19.0

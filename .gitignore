@@ -1,0 +1,22 @@
+# Binaires compilés
+*.o
+*.obj
+*.exe
+*.out
+a.out
+*.so
+*.a
+
+# Exécutables sans extension produits par gcc -o
+code/bin/
+bin/
+
+# Fichiers de debug
+*.dSYM/
+core
+vgcore.*
+
+# Éditeurs / OS
+.vscode/
+.DS_Store
+Thumbs.db
