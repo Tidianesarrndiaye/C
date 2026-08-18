@@ -20,3 +20,6 @@ vgcore.*
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Fichiers generes par les exemples
+01-introduction-au-c/code/notes.txt
