@@ -144,10 +144,32 @@ printf("Duree : %.4f s\n", duree);
 `time()` (précision : la seconde) ou `clock_gettime(CLOCK_MONOTONIC, …)` (précision : la
 nanoseconde).
 
-Depuis le terminal, le plus simple reste :
+`clock_gettime` est une fonction POSIX, mais MinGW-w64 la fournit aussi : le code suivant compile
+et tourne sur les **deux** systèmes.
+
+```c
+struct timespec t;
+clock_gettime(CLOCK_MONOTONIC, &t);
+```
+
+Depuis le terminal :
+
+**Linux / WSL** (et shell MSYS2)
 
 ```bash
 time ./prog
+```
+
+**Windows — PowerShell** — `time` n'existe pas ; l'équivalent est `Measure-Command` :
+
+```powershell
+Measure-Command { .\prog.exe }
+```
+
+⚠️ `Measure-Command` avale la sortie du programme. Pour la voir en même temps :
+
+```powershell
+Measure-Command { .\prog.exe | Out-Default }
 ```
 
 ## Résumé des types

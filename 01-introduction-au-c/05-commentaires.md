@@ -92,9 +92,30 @@ Beaucoup de projets C commencent chaque fichier par un bloc de ce genre :
 ## Accents dans les commentaires et les chaînes
 
 Les accents fonctionnent en UTF-8 avec un terminal moderne, mais peuvent s'afficher bizarrement
-sous Windows (`cmd.exe`) ou dans certains environnements. Beaucoup de codeurs C écrivent donc
-leurs commentaires et leurs `printf` **sans accents** par sécurité. C'est ce qui est fait dans les
-fichiers `code/` de ce parcours.
+selon le système. Beaucoup de codeurs C écrivent donc leurs commentaires et leurs `printf`
+**sans accents** par sécurité. C'est ce qui est fait dans les fichiers `code/` de ce parcours.
+
+| | Comportement |
+|---|---|
+| **Linux / WSL** | UTF-8 par défaut partout : `printf("Été\n")` s'affiche correctement |
+| **Windows** | la console démarre en page de codes 850/1252 → `Ã‰tÃ©`. Il faut passer en UTF-8 |
+
+Sous Windows, une fois par session PowerShell :
+
+```powershell
+chcp 65001
+```
+
+Ou définitivement, dans `notepad $PROFILE` :
+
+```powershell
+$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()
+chcp 65001 > $null
+```
+
+⚠️ `chcp 65001` règle **l'affichage**, pas la saisie : `scanf`/`fgets` sur des caractères
+accentués restent délicats sous Windows. Raison de plus pour écrire ton code sans accents tant
+que tu apprends.
 
 ## Exercice
 

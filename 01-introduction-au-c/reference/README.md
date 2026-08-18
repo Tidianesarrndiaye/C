@@ -10,6 +10,7 @@ Fiches à consulter, pas à lire d'un bout à l'autre.
 - [`<math.h>` — mathématiques](math-h.md)
 - [`<ctype.h>` — classification de caractères](ctype-h.md)
 - [`<time.h>` — date et heure](time-h.md)
-- [Aide-mémoire gcc et terminal](gcc-aide-memoire.md)
+- [Aide-mémoire gcc et terminal](gcc-aide-memoire.md) — commandes des deux systèmes
+- [Portabilité Linux ↔ Windows](portabilite.md) — `_WIN32`, taille de `long`, `\r\n`, chemins
 
 Équivalent W3Schools : la section **C Reference**.

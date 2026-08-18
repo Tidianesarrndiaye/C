@@ -164,16 +164,34 @@ int main(void) {
 }
 ```
 
-Test au terminal :
+Test au terminal.
+
+**Linux / WSL** (et shell MSYS2)
 
 ```bash
 gcc -Wall -Wextra -std=c17 code/18_input.c -o /tmp/prog && /tmp/prog
 ```
 
+**Windows — PowerShell**
+
+```powershell
+gcc -Wall -Wextra -std=c17 code\18_input.c -o prog.exe
+if ($?) { .\prog.exe }
+```
+
 Tu peux aussi lui donner l'entrée directement, sans taper :
+
+**Linux / WSL**
 
 ```bash
 printf "Tidiane\n25\n" | /tmp/prog
+```
+
+**Windows — PowerShell** — `printf` n'existe pas ici ; on envoie un tableau de lignes dans le
+tuyau, et PowerShell ajoute les retours à la ligne :
+
+```powershell
+"Tidiane", "25" | .\prog.exe
 ```
 
 ## Exercice

@@ -148,6 +148,12 @@ tab[10] = 42;          // ❌ ecrit hors du bloc
 
 ## L'outil indispensable : Valgrind
 
+> ⚠️ **C'est le seul chapitre du parcours où les deux systèmes ne sont pas à égalité.**
+> Valgrind **et** les sanitizers de gcc existent sous Linux/WSL, et **aucun des deux** n'existe
+> sous Windows avec MinGW-w64. Si tu as WSL, fais ce chapitre sous WSL.
+
+### Linux / WSL
+
 ```bash
 sudo apt install valgrind
 gcc -g -Wall -Wextra -std=c17 prog.c -o prog     # -g : symboles de debogage
@@ -176,6 +182,50 @@ Alternative moderne, intégrée à gcc :
 ```bash
 gcc -fsanitize=address,undefined -g prog.c -o prog && ./prog
 ```
+
+### Windows
+
+| Outil | Disponible ? |
+|---|---|
+| **Valgrind** | ❌ n'a jamais été porté sous Windows |
+| **`-fsanitize=address,undefined`** | ❌ MinGW-w64 ne fournit pas `libasan`/`libubsan` |
+| **Dr. Memory** | ✅ l'équivalent Windows de Valgrind, gratuit |
+| **`/fsanitize=address` de MSVC** | ✅ mais il faut Visual Studio, un autre compilateur |
+| **WSL** | ✅ **la solution recommandée** |
+
+Si tu tentes le sanitizer sous MinGW, tu obtiens exactement ceci :
+
+```
+ld.exe: cannot find -lasan: No such file or directory
+collect2.exe: error: ld returned 1 exit status
+```
+
+Ce n'est pas une erreur de ta part : la bibliothèque n'existe pas dans cette chaîne d'outils.
+
+**Option A — passer par WSL** (recommandée) : tu retrouves exactement les commandes ci-dessus.
+
+**Option B — Dr. Memory** : télécharge-le sur <https://drmemory.org>, puis
+
+```powershell
+gcc -g -Wall -Wextra -std=c17 prog.c -o prog.exe
+drmemory -- .\prog.exe
+```
+
+Il affiche les fuites avec les numéros de ligne, comme Valgrind.
+
+**Option C — sans outil** : compte tes `malloc` et tes `free` à la main, en instrumentant :
+
+```c
+static int allocations = 0;
+
+void *mon_malloc(size_t n) { allocations++; return malloc(n); }
+void  mon_free(void *p)    { if (p) allocations--; free(p); }
+
+// a la fin de main :
+printf("Blocs non liberes : %d\n", allocations);   // doit afficher 0
+```
+
+C'est rudimentaire, mais ça détecte la fuite la plus courante : le `free` oublié.
 
 ## Exemple complet
 
@@ -254,15 +304,15 @@ free(matrice);
 3. `p = NULL;` après `free(p)`.
 4. N'accède jamais à un pointeur libéré.
 5. Réserve toujours `+1` pour le `'\0'` des chaînes.
-6. Fais tourner Valgrind.
+6. Fais tourner Valgrind (Linux/WSL) ou Dr. Memory (Windows).
 
 ## Exercice
 
 1. Alloue dynamiquement un tableau dont l'utilisateur choisit la taille, remplis-le, affiche-le,
-   libère-le. Vérifie avec Valgrind qu'il n'y a aucune fuite.
+   libère-le. Vérifie qu'il n'y a aucune fuite (Valgrind sous Linux/WSL, Dr. Memory sous Windows).
 2. Écris ta propre version de `strdup`.
 3. Crée un tableau dynamique qui double de taille quand il est plein (`realloc`).
-4. Introduis volontairement une fuite et retrouve-la avec Valgrind.
+4. Introduis volontairement une fuite et retrouve-la avec ton détecteur de fuites.
 
 ---
 ⬅️ [29 — Enums](29-enums.md) | ➡️ [31 — Erreurs et débogage](31-erreurs-et-debogage.md)

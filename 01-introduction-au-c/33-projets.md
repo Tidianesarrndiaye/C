@@ -12,6 +12,8 @@ dans l'ordre : chacun réutilise les notions du précédent.
 3. Fais marcher une version minuscule (une seule fonctionnalité), puis ajoute.
 4. Compile souvent : `gcc -Wall -Wextra -std=c17`.
 5. Teste les cas limites : entrée vide, valeur négative, tableau plein, fichier absent.
+6. Si ton code doit tourner sur les deux systèmes, isole ce qui diffère derrière un `#ifdef _WIN32`
+   et n'en parle plus.
 
 ---
 
@@ -102,7 +104,8 @@ typedef struct Noeud {
 } Noeud;
 ```
 Implémente : insertion en tête, en queue, suppression, recherche, affichage, inversion, libération
-complète. **Passe le tout à Valgrind** : zéro fuite.
+complète. **Passe le tout à un détecteur de fuites** (Valgrind sous Linux/WSL, Dr. Memory sous
+Windows) : zéro fuite.
 
 *C'est la structure de données fondamentale du C. Ne saute pas ce projet.*
 
@@ -111,8 +114,11 @@ Implémente une pile (LIFO) et une file (FIFO), d'abord avec un tableau, puis av
 chaînée. Utilise la pile pour vérifier l'équilibrage des parenthèses d'une expression.
 
 ### 4.5 Mini `wc`
-Reproduis la commande Unix : `./wc fichier.txt` affiche lignes, mots, octets. Lis le nom du
-fichier dans `argv`.
+Reproduis la commande Unix : `./wc fichier.txt` (Linux/WSL) ou `.\wc.exe fichier.txt` (Windows)
+affiche lignes, mots, octets. Lis le nom du fichier dans `argv`.
+
+⚠️ Sous Windows, un fichier texte se termine par `\r\n` : ouvre-le en mode binaire (`"rb"`) si tu
+veux un compte d'octets identique à celui de la vraie commande `wc`.
 
 ---
 
@@ -122,7 +128,21 @@ fichier dans `argv`.
 Ouvrir, afficher avec numéros de ligne, modifier une ligne, insérer, supprimer, sauvegarder.
 
 ### 5.2 Jeu de la vie de Conway
-Grille 2D, règles de voisinage, animation dans le terminal (`system("clear")` + pause).
+Grille 2D, règles de voisinage, animation dans le terminal. Effacer l'écran dépend du système —
+c'est l'occasion d'écrire ta première fonction portable :
+
+```c
+#ifdef _WIN32
+  #define EFFACER "cls"
+#else
+  #define EFFACER "clear"
+#endif
+
+system(EFFACER);
+```
+
+`_WIN32` est défini automatiquement par tout compilateur Windows (y compris MinGW en 64 bits) et
+par aucun compilateur Linux. C'est **le** test de plateforme standard en C.
 
 ### 5.3 Table de hachage
 Fonction de hachage, gestion des collisions par chaînage, `inserer` / `chercher` / `supprimer`.
@@ -136,7 +156,9 @@ descendante.
 ## Idées de suite après ce parcours
 
 - **Structures de données et algorithmes en C** : arbres binaires, graphes, complexité.
-- **Programmation système Linux** : `fork`, `exec`, `pipe`, signaux, sockets, threads (`pthread`).
+- **Programmation système** : sous Linux, `fork`, `exec`, `pipe`, signaux, sockets, `pthread` ;
+  sous Windows, l'API Win32 (`CreateProcess`, `CreateThread`, *named pipes*). Les deux mondes
+  divergent complètement ici — d'où l'intérêt de WSL pour suivre les cours et livres classiques.
 - **Le livre de référence** : *The C Programming Language*, Kernighan & Ritchie (« le K&R »).
 - **Passer au C++ ou au Rust** : la marche est bien plus courte une fois le C acquis.
 

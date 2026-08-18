@@ -167,10 +167,27 @@ fprintf(stderr, "[%s:%d] i = %d\n", __FILE__, __LINE__, i);
 
 ## Le débogueur : `gdb`
 
+`gdb` fonctionne à l'identique sur les deux systèmes — seuls le nom du binaire et le préfixe
+changent.
+
+**Linux / WSL** (et shell MSYS2)
+
 ```bash
 gcc -g -Wall -Wextra -std=c17 prog.c -o prog     # -g : indispensable
 gdb ./prog
 ```
+
+**Windows — PowerShell**
+
+```powershell
+gcc -g -Wall -Wextra -std=c17 prog.c -o prog.exe
+gdb .\prog.exe
+```
+
+Sous Windows, `gdb` fait partie du groupe `mingw-w64-x86_64-toolchain` ; s'il manque :
+`pacman -S mingw-w64-x86_64-gdb` depuis le shell MSYS2.
+
+Une fois dans `gdb`, **toutes les commandes du tableau ci-dessous sont identiques**.
 
 | Commande | Effet |
 |---|---|
@@ -204,6 +221,18 @@ gcc -fsanitize=address,undefined -g prog.c -o prog && ./prog
 Le programme s'arrête **au moment exact** de l'erreur, avec la ligne et une explication —
 dépassement de tableau, usage après libération, débordement d'entier…
 
+> ⚠️ **Linux / WSL uniquement.** MinGW-w64 ne fournit pas `libasan` / `libubsan` : sous Windows
+> la commande échoue à l'édition de liens avec `ld.exe: cannot find -lasan`. Ce n'est pas une
+> erreur de ta part. Sous Windows, utilise **Dr. Memory** ou repasse par **WSL** — voir le
+> chapitre [30](30-gestion-de-la-memoire.md).
+
+En revanche, ces protections-là marchent sur les deux systèmes :
+
+```bash
+gcc -Wall -Wextra -Wpedantic -Wshadow -Wconversion -g -O1 -fstack-protector-all \
+    -D_FORTIFY_SOURCE=2 prog.c -o prog
+```
+
 ## `assert` : vérifier les hypothèses
 
 ```c
@@ -233,7 +262,8 @@ Si la condition est fausse, le programme s'arrête avec le fichier et la ligne. 
 2. Provoque un `Segmentation fault` (déréférence de `NULL`), puis retrouve la ligne avec `gdb` et
    `backtrace`.
 3. Écris une fonction de division sûre qui renvoie un code d'erreur.
-4. Fais tourner un de tes programmes avec `-fsanitize=address` et avec `valgrind`.
+4. Fais tourner un de tes programmes avec `-fsanitize=address` et `valgrind` (Linux/WSL), ou avec
+   Dr. Memory (Windows).
 
 ---
 ⬅️ [30 — Gestion de la mémoire](30-gestion-de-la-memoire.md) | ➡️ [32 — Date et heure](32-date-et-heure.md)

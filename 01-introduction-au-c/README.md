@@ -64,17 +64,41 @@ Le contenu est réécrit en français, avec des exemples compilables au terminal
 | 33 | [Projets](33-projets.md) | C Projects |
 
 ### Annexes
-- [`reference/`](reference/) — mots-clés du langage et fiches des bibliothèques standard (`stdio.h`, `stdlib.h`, `string.h`, `math.h`, `ctype.h`, `time.h`).
+- [`reference/`](reference/) — mots-clés du langage, fiches des bibliothèques standard (`stdio.h`, `stdlib.h`, `string.h`, `math.h`, `ctype.h`, `time.h`), aide-mémoire gcc et fiche de portabilité Linux ↔ Windows.
 - [`code/`](code/) — tous les exemples, compilables (`make`).
 - [`exercices/`](exercices/) — les exercices, un fichier par bloc de chapitres.
+
+## Deux systèmes pris en charge
+
+Ce parcours se suit indifféremment sous **Linux / WSL** ou sous **Windows natif** (MSYS2 /
+MinGW-w64). Chaque commande du cours est donnée dans les deux versions.
+
+- L'installation des deux environnements est décrite au chapitre
+  [02 — Démarrer](02-demarrer.md).
+- Les différences du langage lui-même (taille de `long`, `\r\n`, `#ifdef _WIN32`…) sont
+  regroupées dans la fiche [`reference/portabilite.md`](reference/portabilite.md).
+- Le seul chapitre où les deux systèmes ne sont pas à égalité est le
+  [30 — Gestion de la mémoire](30-gestion-de-la-memoire.md) : Valgrind et les sanitizers
+  n'existent pas sous MinGW-w64.
+
+> 💡 Le shell **MSYS2** est un bash : la colonne « Linux / WSL » y fonctionne telle quelle. La
+> colonne « Windows » s'adresse à **PowerShell**.
 
 ## Comment travailler chaque chapitre
 
 1. Lis le `.md`.
 2. Ouvre le fichier `code/NN_*.c` correspondant dans VS Code.
-3. Compile et exécute au terminal :
+3. Compile et exécute au terminal.
+
+   **Linux / WSL** (et shell MSYS2)
    ```bash
    gcc -Wall -Wextra -std=c17 code/04_output.c -o /tmp/prog && /tmp/prog
+   ```
+
+   **Windows — PowerShell**
+   ```powershell
+   gcc -Wall -Wextra -std=c17 code\04_output.c -o prog.exe
+   if ($?) { .\prog.exe }
    ```
 4. **Modifie** l'exemple (casse-le exprès, regarde l'erreur du compilateur) — c'est là qu'on apprend le C.
 5. Fais l'exercice du chapitre.

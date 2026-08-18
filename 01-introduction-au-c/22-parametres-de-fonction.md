@@ -176,6 +176,8 @@ int main(int argc, char *argv[]) {
 }
 ```
 
+**Linux / WSL** (et shell MSYS2)
+
 ```bash
 ./prog bonjour 42
 # argc = 3
@@ -184,7 +186,19 @@ int main(int argc, char *argv[]) {
 # argv[2] = 42
 ```
 
-`argv[0]` est toujours le nom du programme. Les arguments arrivent comme des **chaînes** :
+**Windows — PowerShell**
+
+```powershell
+.\prog.exe bonjour 42
+# argc = 3
+# argv[0] = C:\...\prog.exe      <- chemin complet, pas ".\prog.exe"
+# argv[1] = bonjour
+# argv[2] = 42
+```
+
+`argv[0]` est toujours le nom du programme — mais **sa forme exacte dépend du système** : le
+texte tapé sous Linux, le chemin complet sous Windows. Ne t'en sers jamais pour autre chose que
+l'affichage d'un message d'aide. Les arguments arrivent comme des **chaînes** :
 pour un nombre, il faut convertir avec `atoi()` ou mieux `strtol()` (`<stdlib.h>`).
 
 ## Récapitulatif

@@ -159,8 +159,17 @@ int main(void) {
 }
 ```
 
+**Linux / WSL** (et shell MSYS2)
+
 ```bash
 gcc -Wall -Wextra -std=c17 code/04_output.c -o /tmp/prog && /tmp/prog
+```
+
+**Windows — PowerShell**
+
+```powershell
+gcc -Wall -Wextra -std=c17 code\04_output.c -o prog.exe
+if ($?) { .\prog.exe }
 ```
 
 ## Exercice

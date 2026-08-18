@@ -51,7 +51,7 @@ int n = rand() % 100 + 1;    // 1 a 100
 | `exit(code)` | termine le programme (`EXIT_SUCCESS` / `EXIT_FAILURE`) |
 | `abort()` | termine brutalement |
 | `atexit(f)` | enregistre une fonction à exécuter à la sortie |
-| `system(cmd)` | exécute une commande shell |
+| `system(cmd)` | exécute une commande shell — ⚠️ la commande dépend du système : `"clear"` sous Linux, `"cls"` sous Windows |
 | `getenv(nom)` | lit une variable d'environnement |
 
 ## Divers

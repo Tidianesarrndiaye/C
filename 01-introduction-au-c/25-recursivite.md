@@ -91,7 +91,10 @@ int fibonacci_iteratif(int n) {
 }
 ```
 
-Lance les deux avec `n = 40` et compare avec `time ./prog` — la leçon marque plus que le texte.
+Lance les deux avec `n = 40` et compare les durées — la leçon marque plus que le texte :
+
+- **Linux / WSL** : `time ./prog`
+- **Windows — PowerShell** : `Measure-Command { .\prog.exe }`
 
 ### Puissance
 

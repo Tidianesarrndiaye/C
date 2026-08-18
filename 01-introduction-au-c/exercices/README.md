@@ -15,5 +15,7 @@ fichier `.c` à côté (par exemple `exercices/mes-solutions/01_hello.c`).
 
 1. Ne regarde pas la solution avant d'avoir essayé et **fait tourner** ton code.
 2. Compile toujours avec `-Wall -Wextra` : zéro avertissement.
+   - **Linux / WSL** : `gcc -Wall -Wextra -std=c17 mon.c -o mon && ./mon`
+   - **Windows** : `gcc -Wall -Wextra -std=c17 mon.c -o mon.exe` puis `.\mon.exe`
 3. Teste les cas limites (0, négatif, vide, valeur maximale).
 4. Quand ça marche, relis-toi : les noms sont-ils clairs ? Y a-t-il du code répété ?

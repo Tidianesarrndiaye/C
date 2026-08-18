@@ -27,7 +27,37 @@ FILE *f = fopen("donnees.txt", "w");
 | `"w+"` | lecture + écriture, vide le fichier | le crée |
 | `"a+"` | lecture + ajout | le crée |
 
-Ajoute `b` pour le mode binaire (`"rb"`, `"wb"`) — sans effet sur Linux, important sur Windows.
+Ajoute `b` pour le mode binaire (`"rb"`, `"wb"`).
+
+### Mode texte et mode binaire : la différence Linux / Windows
+
+C'est **le** point du chapitre où les deux systèmes divergent vraiment.
+
+| | Mode texte (`"r"`, `"w"`) | Mode binaire (`"rb"`, `"wb"`) |
+|---|---|---|
+| **Linux / WSL** | rien de spécial : `\n` est écrit tel quel | identique au mode texte |
+| **Windows** | `\n` écrit devient `\r\n` sur le disque ; à la lecture `\r\n` redevient `\n` | **aucune traduction** : tu lis et écris exactement les octets |
+
+Trois conséquences pratiques :
+
+1. Un fichier écrit par ton programme sous Windows en mode texte pèse **une ligne = un octet de
+   plus** que le même fichier sous Linux. `ftell`/`fseek` sur un fichier texte n'y donnent donc
+   pas la même valeur.
+2. Dès que tu manipules autre chose que du texte (images, `fwrite` d'une `struct`), **utilise
+   toujours `"rb"`/`"wb"`** : en mode texte, un octet `0x0A` au milieu de tes données serait
+   corrompu en `0x0D 0x0A`.
+3. Si tu lis sous Linux un fichier produit sous Windows, tes lignes se terminent par un `\r`
+   parasite que `fgets` te rendra. Pour le nettoyer :
+
+   ```c
+   ligne[strcspn(ligne, "\r\n")] = '\0';   // enleve \n ET \r\n
+   ```
+
+   Cet idiome remplace avantageusement le `ligne[strcspn(ligne, "\n")] = '\0'` habituel : il est
+   correct sur les deux systèmes.
+
+> 💡 Si tu versionnes tes fichiers avec Git sous Windows, configure une bonne fois
+> `git config --global core.autocrlf input` pour ne pas committer des `\r\n`.
 
 > ⚠️ `"w"` **efface tout le contenu existant** sans prévenir. Si tu veux ajouter, c'est `"a"`.
 
@@ -178,10 +208,18 @@ printf("bonjour\n");                     // = fprintf(stdout, …)
 fprintf(stderr, "Erreur critique\n");    // messages d'erreur
 ```
 
-Écrire les erreurs sur `stderr` permet de les séparer au terminal :
+Écrire les erreurs sur `stderr` permet de les séparer au terminal.
+
+**Linux / WSL** (et shell MSYS2)
 
 ```bash
 ./prog > sortie.txt 2> erreurs.txt
+```
+
+**Windows — PowerShell**
+
+```powershell
+.\prog.exe > sortie.txt 2> erreurs.txt
 ```
 
 ## Programme complet

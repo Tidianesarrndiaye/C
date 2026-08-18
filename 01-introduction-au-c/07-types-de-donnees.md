@@ -30,12 +30,46 @@ On combine les types de base avec `short`, `long`, `signed`, `unsigned` :
 | `short int` | 2 octets | −32 768 … 32 767 | `%hd` |
 | `unsigned short` | 2 octets | 0 … 65 535 | `%hu` |
 | `unsigned int` | 4 octets | 0 … 4 294 967 295 | `%u` |
-| `long int` | 8 octets (Linux 64 bits) | ±9,2 × 10¹⁸ | `%ld` |
+| `long int` | **dépend du système** (voir ci-dessous) | — | `%ld` |
 | `long long int` | 8 octets | ±9,2 × 10¹⁸ | `%lld` |
-| `unsigned long` | 8 octets | 0 … 1,8 × 10¹⁹ | `%lu` |
-| `long double` | 16 octets | très grande précision | `%Lf` |
+| `unsigned long long` | 8 octets | 0 … 1,8 × 10¹⁹ | `%llu` |
+| `long double` | dépend du système | très grande précision | `%Lf` |
 
 `unsigned` = « sans signe » : pas de valeurs négatives, mais deux fois plus de valeurs positives.
+
+## ⚠️ `long` ne fait pas la même taille sous Linux et sous Windows
+
+C'est le piège de portabilité numéro un du C, et il concerne directement ce parcours :
+
+| Type | Linux / WSL 64 bits (**LP64**) | Windows 64 bits (**LLP64**) |
+|---|---|---|
+| `int` | 4 octets | 4 octets |
+| `long` | **8 octets** | **4 octets** |
+| `long long` | 8 octets | 8 octets |
+| pointeur (`int *`) | 8 octets | 8 octets |
+| `long double` | 16 octets | 16 octets sous MinGW, 8 sous MSVC |
+
+Conséquence concrète : un programme qui stocke une grande valeur dans un `long` marche sous Linux
+et **déborde silencieusement** sous Windows.
+
+```c
+long grand = 3000000000L;    // OK sous Linux (8 octets), deborde sous Windows (4 octets)
+```
+
+Les trois réflexes :
+
+1. Si tu veux « au moins 64 bits », écris **`long long`**, jamais `long`.
+2. Mieux : utilise les types de largeur fixe de `<stdint.h>`, identiques partout —
+   `int32_t`, `int64_t`, `uint64_t`… Ce sont eux qu'on utilise dans le vrai code portable.
+3. Ne suppose **jamais** une taille : demande-la à `sizeof`.
+
+```c
+#include <stdint.h>
+#include <inttypes.h>
+
+int64_t grand = 3000000000;
+printf("%" PRId64 "\n", grand);    // PRId64 : le bon specificateur, sur les deux systemes
+```
 
 ## Connaître la taille réelle : `sizeof`
 

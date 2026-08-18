@@ -1,6 +1,7 @@
 /*
  * 30_memoire.c - allocation dynamique
- * A verifier avec :  valgrind --leak-check=full ./30_memoire
+ * A verifier avec :  valgrind --leak-check=full ./30_memoire   (Linux / WSL)
+ *                     drmemory -- .\30_memoire.exe               (Windows)
  */
 #include <stdio.h>
 #include <stdlib.h>

@@ -10,6 +10,8 @@ a.out
 # Exécutables sans extension produits par gcc -o
 code/bin/
 bin/
+prog
+mon_programme
 
 # Fichiers de debug
 *.dSYM/

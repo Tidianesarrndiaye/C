@@ -20,6 +20,14 @@ gcc -Wall -Wextra -std=c17 prog.c -o prog -lm
 Le `-lm` (*link math*) doit être placé **après** les fichiers source. C'est une erreur de
 débutant très fréquente, et le message ne dit pas quoi faire.
 
+| | `-lm` obligatoire ? |
+|---|---|
+| **Linux / WSL** | ✅ **oui** — la bibliothèque math (`libm`) est séparée de la libc |
+| **Windows (MSYS2 / MinGW-w64)** | non — les fonctions math sont déjà dans la runtime C. `-lm` est accepté et sans effet |
+
+**Écris `-lm` dans tous les cas** : c'est inoffensif sous Windows, et ça t'évite d'écrire du code
+qui ne compilera pas chez quelqu'un d'autre.
+
 ## Les fonctions les plus utiles
 
 | Fonction | Rôle | Exemple |
@@ -156,8 +164,17 @@ int main(void) {
 }
 ```
 
+**Linux / WSL** (et shell MSYS2)
+
 ```bash
 gcc -Wall -Wextra -std=c17 code/26_math.c -o /tmp/prog -lm && /tmp/prog
+```
+
+**Windows — PowerShell**
+
+```powershell
+gcc -Wall -Wextra -std=c17 code\26_math.c -o prog.exe -lm
+if ($?) { .\prog.exe }
 ```
 
 ## Exercice
