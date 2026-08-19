@@ -15,6 +15,7 @@ int main(void) {
     printf("Pourcentage : 100%%\n\n");
 
     puts("puts ajoute le retour a la ligne tout seul");
+    puts("puts est pratique pour afficher du texte simple");
 
     return 0;
 }
