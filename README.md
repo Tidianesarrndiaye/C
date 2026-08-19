@@ -12,6 +12,7 @@ C/
     ├── README.md              ← sommaire des chapitres
     ├── 01-…-33-….md           ← les chapitres, un fichier .md par chapitre
     ├── code/                  ← les exemples compilables (.c) de chaque chapitre
+    │   └── 02-etapes-compilation/  ← démo Linux/Windows des 4 étapes de gcc (chap. 02)
     ├── exercices/             ← exercices à faire toi-même
     └── reference/             ← fiches de référence (mots-clés, stdio.h, string.h, math.h…)
 ```

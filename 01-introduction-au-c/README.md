@@ -6,62 +6,65 @@ Le contenu est réécrit en français, avec des exemples compilables au terminal
 
 ## Sommaire
 
+La colonne **Code** indique si l'exemple compilable du chapitre existe déjà dans `code/`
+(certains chapitres sont purement théoriques et n'en ont pas besoin, marqués `—`).
+
 ### Les bases
-| # | Chapitre | Page W3Schools correspondante |
-|---|----------|-------------------------------|
-| 01 | [Introduction](01-introduction.md) | C Intro |
-| 02 | [Démarrer (installer et compiler)](02-demarrer.md) | C Get Started |
-| 03 | [Syntaxe](03-syntaxe.md) | C Syntax |
-| 04 | [Afficher du texte (output)](04-sortie-output.md) | C Output / New Lines |
-| 05 | [Commentaires](05-commentaires.md) | C Comments |
-| 06 | [Variables](06-variables.md) | C Variables |
-| 07 | [Types de données](07-types-de-donnees.md) | C Data Types |
-| 08 | [Constantes](08-constantes.md) | C Constants |
-| 09 | [Opérateurs](09-operateurs.md) | C Operators |
-| 10 | [Booléens](10-booleens.md) | C Booleans |
+| # | Chapitre | Page W3Schools correspondante | Code |
+|---|----------|-------------------------------|:---:|
+| 01 | [Introduction](01-introduction.md) | C Intro | — |
+| 02 | [Démarrer (installer et compiler)](02-demarrer.md) | C Get Started | ✅ |
+| 03 | [Syntaxe](03-syntaxe.md) | C Syntax | — |
+| 04 | [Afficher du texte (output)](04-sortie-output.md) | C Output / New Lines | ✅ |
+| 05 | [Commentaires](05-commentaires.md) | C Comments | — |
+| 06 | [Variables](06-variables.md) | C Variables | ✅ |
+| 07 | [Types de données](07-types-de-donnees.md) | C Data Types | ✅ |
+| 08 | [Constantes](08-constantes.md) | C Constants | ⬜ |
+| 09 | [Opérateurs](09-operateurs.md) | C Operators | ⬜ |
+| 10 | [Booléens](10-booleens.md) | C Booleans | ⬜ |
 
 ### Conditions et boucles
-| # | Chapitre | Page W3Schools correspondante |
-|---|----------|-------------------------------|
-| 11 | [if… else](11-if-else.md) | C If...Else |
-| 12 | [switch](12-switch.md) | C Switch |
-| 13 | [Boucle while](13-boucle-while.md) | C While Loop |
-| 14 | [Boucle for](14-boucle-for.md) | C For Loop |
-| 15 | [break et continue](15-break-et-continue.md) | C Break/Continue |
+| # | Chapitre | Page W3Schools correspondante | Code |
+|---|----------|-------------------------------|:---:|
+| 11 | [if… else](11-if-else.md) | C If...Else | ✅ |
+| 12 | [switch](12-switch.md) | C Switch | ✅ |
+| 13 | [Boucle while](13-boucle-while.md) | C While Loop | ⬜ |
+| 14 | [Boucle for](14-boucle-for.md) | C For Loop | ⬜ |
+| 15 | [break et continue](15-break-et-continue.md) | C Break/Continue | ⬜ |
 
 ### Données composées
-| # | Chapitre | Page W3Schools correspondante |
-|---|----------|-------------------------------|
-| 16 | [Tableaux](16-tableaux.md) | C Arrays |
-| 17 | [Chaînes de caractères](17-chaines-de-caracteres.md) | C Strings |
-| 18 | [Saisie utilisateur](18-saisie-utilisateur.md) | C User Input |
+| # | Chapitre | Page W3Schools correspondante | Code |
+|---|----------|-------------------------------|:---:|
+| 16 | [Tableaux](16-tableaux.md) | C Arrays | ✅ |
+| 17 | [Chaînes de caractères](17-chaines-de-caracteres.md) | C Strings | ✅ |
+| 18 | [Saisie utilisateur](18-saisie-utilisateur.md) | C User Input | ✅ |
 
 ### Mémoire
-| # | Chapitre | Page W3Schools correspondante |
-|---|----------|-------------------------------|
-| 19 | [Adresse mémoire](19-adresse-memoire.md) | C Memory Address |
-| 20 | [Pointeurs](20-pointeurs.md) | C Pointers |
+| # | Chapitre | Page W3Schools correspondante | Code |
+|---|----------|-------------------------------|:---:|
+| 19 | [Adresse mémoire](19-adresse-memoire.md) | C Memory Address | ⬜ |
+| 20 | [Pointeurs](20-pointeurs.md) | C Pointers | ✅ |
 
 ### Fonctions
-| # | Chapitre | Page W3Schools correspondante |
-|---|----------|-------------------------------|
-| 21 | [Fonctions](21-fonctions.md) | C Functions |
-| 22 | [Paramètres de fonction](22-parametres-de-fonction.md) | C Function Parameters |
-| 23 | [Portée (scope)](23-portee-scope.md) | C Scope |
-| 24 | [Déclaration de fonction](24-declaration-de-fonction.md) | C Function Declaration |
-| 25 | [Récursivité](25-recursivite.md) | C Recursion |
-| 26 | [Fonctions mathématiques](26-fonctions-mathematiques.md) | C Math Functions |
+| # | Chapitre | Page W3Schools correspondante | Code |
+|---|----------|-------------------------------|:---:|
+| 21 | [Fonctions](21-fonctions.md) | C Functions | ✅ |
+| 22 | [Paramètres de fonction](22-parametres-de-fonction.md) | C Function Parameters | ⬜ |
+| 23 | [Portée (scope)](23-portee-scope.md) | C Scope | ⬜ |
+| 24 | [Déclaration de fonction](24-declaration-de-fonction.md) | C Function Declaration | ⬜ |
+| 25 | [Récursivité](25-recursivite.md) | C Recursion | ⬜ |
+| 26 | [Fonctions mathématiques](26-fonctions-mathematiques.md) | C Math Functions | ✅ |
 
 ### Aller plus loin
-| # | Chapitre | Page W3Schools correspondante |
-|---|----------|-------------------------------|
-| 27 | [Fichiers](27-fichiers.md) | C Files |
-| 28 | [Structures](28-structures.md) | C Structures |
-| 29 | [Enums](29-enums.md) | C Enums |
-| 30 | [Gestion de la mémoire](30-gestion-de-la-memoire.md) | C Memory Management |
-| 31 | [Erreurs et débogage](31-erreurs-et-debogage.md) | C Errors / Debugging |
-| 32 | [Date et heure](32-date-et-heure.md) | C Date |
-| 33 | [Projets](33-projets.md) | C Projects |
+| # | Chapitre | Page W3Schools correspondante | Code |
+|---|----------|-------------------------------|:---:|
+| 27 | [Fichiers](27-fichiers.md) | C Files | ✅ |
+| 28 | [Structures](28-structures.md) | C Structures | ✅ |
+| 29 | [Enums](29-enums.md) | C Enums | ✅ |
+| 30 | [Gestion de la mémoire](30-gestion-de-la-memoire.md) | C Memory Management | ✅ |
+| 31 | [Erreurs et débogage](31-erreurs-et-debogage.md) | C Errors / Debugging | ⬜ |
+| 32 | [Date et heure](32-date-et-heure.md) | C Date | ⬜ |
+| 33 | [Projets](33-projets.md) | C Projects | — |
 
 ### Annexes
 - [`reference/`](reference/) — mots-clés du langage, fiches des bibliothèques standard (`stdio.h`, `stdlib.h`, `string.h`, `math.h`, `ctype.h`, `time.h`), aide-mémoire gcc et fiche de portabilité Linux ↔ Windows.

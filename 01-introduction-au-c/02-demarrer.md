@@ -247,7 +247,16 @@ if ($?) { .\hello.exe }
 crun() { gcc -Wall -Wextra -std=c17 "$1" -o /tmp/crun_out && /tmp/crun_out; }
 ```
 
-**Windows — PowerShell** — dans ton profil (`notepad $PROFILE`) :
+**Windows — PowerShell 7+** (connaît `&&`, comme bash) — dans ton profil (`notepad $PROFILE`) :
+
+```powershell
+function crun {
+    param([string]$f)
+    gcc -Wall -Wextra -std=c17 $f -o "$env:TEMP\crun.exe" && & "$env:TEMP\crun.exe"
+}
+```
+
+**Windows — PowerShell 5.1** (pas de `&&`, il faut `if ($?)`) :
 
 ```powershell
 function crun {

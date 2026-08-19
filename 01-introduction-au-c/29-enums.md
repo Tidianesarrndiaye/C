@@ -152,6 +152,15 @@ int main(void) {
 }
 ```
 
+## Exemple exécutable
+
+Le fichier [`code/29_enums.c`](code/29_enums.c) reprend `typedef enum`, un `switch` exhaustif et
+les drapeaux binaires :
+
+```bash
+gcc -Wall -Wextra -std=c17 code/29_enums.c -o /tmp/prog && /tmp/prog
+```
+
 ## Exercice
 
 1. Crée un enum `Saison` et affiche la saison correspondant à un mois donné.

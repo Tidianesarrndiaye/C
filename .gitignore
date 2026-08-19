@@ -25,3 +25,10 @@ Thumbs.db
 
 # Fichiers generes par les exemples
 01-introduction-au-c/code/notes.txt
+
+# Etapes de compilation (chapitre 02) : .i/.s/.o/binaire regeneres a la main,
+# differents sur Linux et Windows -- seul hello.c est versionne.
+01-introduction-au-c/code/02-etapes-compilation/hello.i
+01-introduction-au-c/code/02-etapes-compilation/hello.s
+01-introduction-au-c/code/02-etapes-compilation/hello
+01-introduction-au-c/code/02-etapes-compilation/hello.exe
