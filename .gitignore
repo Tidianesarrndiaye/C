@@ -13,6 +13,19 @@ bin/
 prog
 mon_programme
 
+# Binaires sans extension compiles depuis 01-introduction-au-c/code/NN_nom.c (ex: 04_output)
+01-introduction-au-c/code/[0-9][0-9]_*
+!01-introduction-au-c/code/[0-9][0-9]_*.c
+
+# Binaires sans extension compiles depuis exercices/practice/*.c
+# (ex: exercices/practice/04-appli issu de 04-appli.c)
+# NB: on cible le fichier via son extension plutot qu'un glob **/ global,
+# qui matcherait aussi des dossiers comme "01-introduction-au-c" et les
+# exclurait entierement (les negations ne peuvent pas re-inclure un fichier
+# dont un dossier parent est deja ignore).
+*/exercices/practice/*
+!*/exercices/practice/*.*
+
 # Fichiers de debug
 *.dSYM/
 core
