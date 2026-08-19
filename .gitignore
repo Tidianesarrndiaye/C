@@ -13,6 +13,10 @@ bin/
 prog
 mon_programme
 
+# Binaires sans extension compiles depuis 01-introduction-au-c/code/NN_nom.c (ex: 04_output)
+01-introduction-au-c/code/[0-9][0-9]_*
+!01-introduction-au-c/code/[0-9][0-9]_*.c
+
 # Fichiers de debug
 *.dSYM/
 core
