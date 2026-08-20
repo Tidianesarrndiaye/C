@@ -1,5 +1,8 @@
 /*
  * 06_variables.c - declarer, afficher et modifier des variables
+ * Date: 19-08-2026
+ * Auteur: Tidiane
+ * Compil.: gcc -Wall -Wextra -std=c17 06_variables.c -o 06_variables
  */
 #include <stdio.h>
 

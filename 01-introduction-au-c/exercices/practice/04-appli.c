@@ -2,7 +2,7 @@
 * 04-appli.c 
 *
 * Auteur : Tidiane
-* Date   : 19-08-202
+* Date   : 19-08-2026
 * Compil.: gcc -Wall -Wextra -std=c17 04-appli.c -o 04-appli
 */
 
