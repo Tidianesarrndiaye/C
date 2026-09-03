@@ -24,7 +24,7 @@ mon_programme
 # exclurait entierement (les negations ne peuvent pas re-inclure un fichier
 # dont un dossier parent est deja ignore).
 */exercices/practice/*
-!*/exercices/practice/*.*
+!*/exercices/practice/*.c
 
 # Fichiers de debug
 *.dSYM/
