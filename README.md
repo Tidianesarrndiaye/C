@@ -68,6 +68,18 @@ Dans `code/` un `Makefile` est fourni ; il détecte le système tout seul et ajo
 Windows. `make` compile tout, `make run FILE=02_hello` compile et lance un fichier précis
 (`mingw32-make` sous Windows).
 
+## Lecteur interactif
+
+Depuis `01-introduction-au-c/` :
+
+```powershell
+python -m http.server 8000
+```
+
+puis ouvre `http://localhost:8000/reader.html` : les 33 chapitres s'affichent un par un avec
+navigation précédent/suivant, sommaire cliquable et progression de lecture mémorisée dans le
+navigateur (pas de checklist à cocher à la main).
+
 ## Progression
 
 | Étape | Dossier | État |
