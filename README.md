@@ -7,10 +7,12 @@ Dossier d'apprentissage du langage **C**.
 ```
 C/
 ├── README.md                  ← tu es ici
+├── CLAUDE.md                  ← contexte du projet pour Claude
 ├── .gitignore                 ← ignore les binaires compilés
 └── 01-introduction-au-c/      ← parcours complet, calqué sur le tutoriel C de W3Schools
     ├── README.md              ← sommaire des chapitres
     ├── 01-…-33-….md           ← les chapitres, un fichier .md par chapitre
+    ├── reader.html            ← lecteur interactif (voir plus bas)
     ├── code/                  ← les exemples compilables (.c) de chaque chapitre
     │   └── 02-etapes-compilation/  ← démo Linux/Windows des 4 étapes de gcc (chap. 02)
     ├── exercices/             ← exercices à faire toi-même
