@@ -237,6 +237,51 @@
   }
   .prose tr:last-child td{border-bottom:1px solid var(--rule-strong);}
 
+  .done-row{
+    max-width:660px;
+    margin-top:34px;
+  }
+  .done-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--card);
+    border:1px solid var(--rule-strong);
+    border-radius:20px;
+    padding:9px 18px 9px 14px;
+    cursor:pointer;
+    font-family:var(--serif);
+    font-size:14.5px;
+    font-style:italic;
+    color:var(--ink-muted);
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .done-btn:hover{border-color:var(--red); color:var(--red);}
+  .done-btn .done-mark{
+    width:15px; height:15px; border-radius:50%;
+    border:1.5px solid var(--rule-strong);
+    flex:none;
+    position:relative;
+  }
+  .done-btn:hover .done-mark{border-color:var(--red);}
+  .done-row.done .done-btn{
+    background:var(--red-soft);
+    border-color:var(--red);
+    color:var(--red);
+  }
+  .done-row.done .done-btn .done-mark{
+    background:var(--red);
+    border-color:var(--red);
+  }
+  .done-row.done .done-btn .done-mark::after{
+    content:"";
+    position:absolute; left:3px; top:0px;
+    width:4px; height:8px;
+    border-right:1.5px solid var(--card);
+    border-bottom:1.5px solid var(--card);
+    transform:rotate(45deg);
+  }
+
   .foot-nav{
     max-width:660px;
     margin:52px 0 0;
@@ -378,6 +423,12 @@
           <h1 class="chap-title" id="chap-title">Chargement du sommaire…</h1>
         </div>
         <div class="prose" id="chap-body"></div>
+        <div class="done-row" id="done-row" style="display:none;">
+          <button class="done-btn" id="btn-done" type="button">
+            <span class="done-mark"></span>
+            <span class="done-label" id="done-label">marquer comme terminé</span>
+          </button>
+        </div>
         <div class="foot-nav" id="foot-nav" style="display:none;">
           <button class="nav-btn prev" id="btn-prev" type="button">
             <span class="dir">précédent</span>
@@ -417,6 +468,9 @@
   var btnNext = document.getElementById('btn-next');
   var prevLabel = document.getElementById('prev-label');
   var nextLabel = document.getElementById('next-label');
+  var doneRow = document.getElementById('done-row');
+  var btnDone = document.getElementById('btn-done');
+  var doneLabel = document.getElementById('done-label');
 
   function loadState(){
     try{
@@ -536,6 +590,23 @@
     });
   }
 
+  function updateDoneUI(){
+    var isDone = state.read.indexOf(state.current) !== -1;
+    doneRow.classList.toggle('done', isDone);
+    doneLabel.textContent = isDone ? 'chapitre terminé' : 'marquer comme terminé';
+  }
+
+  function toggleDone(){
+    var i = state.current;
+    var pos = state.read.indexOf(i);
+    if(pos === -1) state.read.push(i);
+    else state.read.splice(pos, 1);
+    saveState(state);
+    updateDoneUI();
+    updateTabsUI();
+    elRailFoot.textContent = state.read.length + ' / ' + chapters.length + ' lus';
+  }
+
   function ensureLoaded(i){
     var ch = chapters[i];
     if(ch.loaded) return Promise.resolve(ch);
@@ -568,12 +639,13 @@
       elBody.innerHTML = renderMarkdown(ch.body);
 
       footNav.style.display = 'flex';
+      doneRow.style.display = 'block';
       btnPrev.disabled = i === 0;
       btnNext.disabled = i === chapters.length - 1;
       prevLabel.textContent = i > 0 ? (chapters[i-1].num + ' — ' + chapters[i-1].title) : '';
       nextLabel.textContent = i < chapters.length - 1 ? (chapters[i+1].num + ' — ' + chapters[i+1].title) : 'fin du module';
 
-      if(state.read.indexOf(i) === -1) state.read.push(i);
+      updateDoneUI();
       updateTabsUI();
       saveState(state);
       elRailFoot.textContent = state.read.length + ' / ' + chapters.length + ' lus';
@@ -590,6 +662,7 @@
     render(i);
   }
 
+  btnDone.addEventListener('click', toggleDone);
   btnPrev.addEventListener('click', function(){ goTo(state.current - 1); });
   btnNext.addEventListener('click', function(){ goTo(state.current + 1); });
   document.addEventListener('keydown', function(e){
@@ -633,13 +706,18 @@
     elRailHead.textContent = chapters.length + ' chapitres';
     elRailFoot.textContent = (state.read.length) + ' lus';
 
-    buildTabs();
-    if(state.current >= chapters.length) state.current = 0;
-    render(state.current);
+    // Précharge tous les chapitres (fichiers courts) pour connaître leurs vrais titres
+    // dès le départ — sinon le libellé "suivant"/"précédent" affiche le nom de fichier
+    // brut tant que ce chapitre n'a pas été ouvert.
+    return Promise.all(chapters.map(function(ch, i){ return ensureLoaded(i); })).then(function(){
+      buildTabs();
+      if(state.current >= chapters.length) state.current = 0;
+      render(state.current);
+    });
   }).catch(function(err){
     elRailHead.textContent = 'erreur';
     elTitle.textContent = 'Erreur';
-    elBody.innerHTML = '<div class="error">Impossible de lister le dossier (' + err.message + ').<br><br>Ce lecteur a besoin d\'un serveur HTTP local (le listing de dossier de <code>python -m http.server</code>). Lance-le depuis ce dossier :<br><code>python -m http.server 8329</code><br>puis ouvre <code>http://localhost:8329/reader.html</code>.</div>';
+    elBody.innerHTML = '<div class="error">Impossible de lister le dossier (' + err.message + ').<br><br>Ce lecteur a besoin d\'un serveur HTTP local (le listing de dossier de <code>python -m http.server</code>). Lance-le depuis ce dossier :<br><code>python -m http.server 8000</code><br>puis ouvre <code>http://localhost:8000/reader.html</code>.</div>';
   });
 })();
 </script>
