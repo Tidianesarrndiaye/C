@@ -45,12 +45,17 @@ détecte les chapitres tout seule en lisant le listing de dossier fourni par un 
 Lancer depuis `01-introduction-au-c/` :
 
 ```powershell
-python -m http.server 8000
+python -m http.server 8329
 ```
 
-puis ouvrir `http://localhost:8000/reader.html`. La progression (chapitres lus, position
+puis ouvrir `http://localhost:8329/reader.html`. La progression (chapitres lus, position
 courante) est sauvegardée dans le `localStorage` du navigateur, propre à ce chemin de dossier —
 pas de fichier de progression à maintenir à la main.
+
+**Port 8329** : volontairement non standard (ni `8000`/`8080`, déjà pris par d'autres projets sur
+cette machine). Chaque projet avec un lecteur/serveur local doit avoir son propre port dédié, pour
+pouvoir tous tourner en même temps sans conflit — voir `educmathsplateforme` (`8743`) et `reseaux`
+(`8461`).
 
 ## Ce qu'il ne faut pas faire
 
