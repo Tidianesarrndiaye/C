@@ -75,10 +75,10 @@ Windows. `make` compile tout, `make run FILE=02_hello` compile et lance un fichi
 Depuis `01-introduction-au-c/` :
 
 ```powershell
-python -m http.server 8000
+python -m http.server 8329
 ```
 
-puis ouvre `http://localhost:8000/reader.html` : les 33 chapitres s'affichent un par un avec
+puis ouvre `http://localhost:8329/reader.html` : les 33 chapitres s'affichent un par un avec
 navigation précédent/suivant, sommaire cliquable et progression de lecture mémorisée dans le
 navigateur (pas de checklist à cocher à la main).
 
