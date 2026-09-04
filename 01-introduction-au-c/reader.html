@@ -9,41 +9,41 @@
 <style>
   :root{
     color-scheme: light dark;
-    --paper:#f4f3ec;
-    --paper-2:#eeece2;
-    --card:#faf9f3;
-    --rule:#c9d6d2;
-    --rule-strong:#aebdb6;
-    --ink:#1f2a24;
-    --ink-muted:#5b6b62;
-    --ink-faint:#8a998f;
-    --red:#b3321c;
-    --red-soft:#f3ddd4;
-    --code-bg:#20281f;
-    --code-ink:#e4e6da;
-    --code-accent:#e8b090;
-    --shadow:0 1px 1px rgba(31,42,36,.05), 0 6px 18px -10px rgba(31,42,36,.28);
+    --paper:#f2f4f7;
+    --paper-2:#e9edf2;
+    --card:#fbfcfd;
+    --rule:#ccd5e0;
+    --rule-strong:#aab6c4;
+    --ink:#1b2330;
+    --ink-muted:#586475;
+    --ink-faint:#8894a2;
+    --accent:#1f6e86;
+    --accent-soft:#dbe9ec;
+    --code-bg:#161c26;
+    --code-ink:#dfe5ea;
+    --code-accent:#6fd6ce;
+    --shadow:0 1px 1px rgba(20,28,40,.05), 0 6px 18px -10px rgba(20,28,40,.28);
     --serif:'Newsreader', Georgia, 'Times New Roman', serif;
     --mono:'JetBrains Mono', 'SF Mono', Consolas, monospace;
     --grid-op: .05;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --paper:#191c17; --paper-2:#14170f; --card:#20241d;
-      --rule:#333c30; --rule-strong:#454f40;
-      --ink:#e7e6da; --ink-muted:#a7ab98; --ink-faint:#6c7566;
-      --red:#e2694c; --red-soft:#3a241d;
-      --code-bg:#0f130d; --code-ink:#dfe3d4; --code-accent:#e8b090;
+      --paper:#12151c; --paper-2:#0d0f15; --card:#181d27;
+      --rule:#262d3a; --rule-strong:#3a4353;
+      --ink:#e6e9ee; --ink-muted:#9aa5b3; --ink-faint:#606c7c;
+      --accent:#3fd6ce; --accent-soft:#1b3838;
+      --code-bg:#0a0d13; --code-ink:#dde3e8; --code-accent:#7fe0d8;
       --shadow:0 1px 1px rgba(0,0,0,.3), 0 6px 18px -10px rgba(0,0,0,.6);
       --grid-op: .08;
     }
   }
   :root[data-theme="dark"]{
-    --paper:#191c17; --paper-2:#14170f; --card:#20241d;
-    --rule:#333c30; --rule-strong:#454f40;
-    --ink:#e7e6da; --ink-muted:#a7ab98; --ink-faint:#6c7566;
-    --red:#e2694c; --red-soft:#3a241d;
-    --code-bg:#0f130d; --code-ink:#dfe3d4; --code-accent:#e8b090;
+    --paper:#12151c; --paper-2:#0d0f15; --card:#181d27;
+    --rule:#262d3a; --rule-strong:#3a4353;
+    --ink:#e6e9ee; --ink-muted:#9aa5b3; --ink-faint:#606c7c;
+    --accent:#3fd6ce; --accent-soft:#1b3838;
+    --code-bg:#0a0d13; --code-ink:#dde3e8; --code-accent:#7fe0d8;
     --shadow:0 1px 1px rgba(0,0,0,.3), 0 6px 18px -10px rgba(0,0,0,.6);
     --grid-op: .08;
   }
@@ -107,7 +107,7 @@
     padding:2px 0;
     cursor:pointer;
   }
-  .theme-toggle:hover{color:var(--red); border-color:var(--red);}
+  .theme-toggle:hover{color:var(--accent); border-color:var(--accent);}
 
   .reader{
     flex:1;
@@ -169,7 +169,7 @@
   .prose li>ul, .prose li>ol{margin-top:8px;}
   .prose strong{font-weight:600;}
   .prose a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--rule-strong);text-underline-offset:3px;}
-  .prose a:hover{text-decoration-color:var(--red); color:var(--red);}
+  .prose a:hover{text-decoration-color:var(--accent); color:var(--accent);}
   .prose code{
     font-family:var(--mono);
     font-size:.82em;
@@ -184,7 +184,7 @@
   .prose blockquote{
     margin:22px 0;
     padding:4px 0 4px 20px;
-    border-left:2px solid var(--red);
+    border-left:2px solid var(--accent);
     font-style:italic;
     color:var(--ink-muted);
     font-size:16.5px;
@@ -256,22 +256,22 @@
     color:var(--ink-muted);
     transition:background .12s ease, color .12s ease, border-color .12s ease;
   }
-  .done-btn:hover{border-color:var(--red); color:var(--red);}
+  .done-btn:hover{border-color:var(--accent); color:var(--accent);}
   .done-btn .done-mark{
     width:15px; height:15px; border-radius:50%;
     border:1.5px solid var(--rule-strong);
     flex:none;
     position:relative;
   }
-  .done-btn:hover .done-mark{border-color:var(--red);}
+  .done-btn:hover .done-mark{border-color:var(--accent);}
   .done-row.done .done-btn{
-    background:var(--red-soft);
-    border-color:var(--red);
-    color:var(--red);
+    background:var(--accent-soft);
+    border-color:var(--accent);
+    color:var(--accent);
   }
   .done-row.done .done-btn .done-mark{
-    background:var(--red);
-    border-color:var(--red);
+    background:var(--accent);
+    border-color:var(--accent);
   }
   .done-row.done .done-btn .done-mark::after{
     content:"";
@@ -310,7 +310,7 @@
     font-family:var(--serif);
     font-style:italic;
     font-size:13.5px;
-    color:var(--red);
+    color:var(--accent);
   }
   .nav-btn .label{
     font-size:16px;
@@ -321,7 +321,7 @@
   .nav-btn:hover:not(:disabled) .label{border-bottom-color:var(--ink);}
 
   .empty, .loading, .error{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink-muted);padding:20px 0;}
-  .error{color:var(--red);}
+  .error{color:var(--accent);}
 
   /* ---------- Tab rail (sidebar as index-card tabs) ---------- */
   .tabrail{
@@ -370,17 +370,17 @@
     margin-left:auto;
     flex:none;
   }
-  .tab.read .dot{background:var(--red); border-color:var(--red);}
+  .tab.read .dot{background:var(--accent); border-color:var(--accent);}
   .tab.active{
     width:84px;
     background:var(--paper);
     border-color:var(--rule-strong);
-    color:var(--red);
+    color:var(--accent);
     box-shadow:var(--shadow);
     z-index:2;
   }
-  .tab.active .num{color:var(--red); font-weight:600;}
-  .tab.active .dot{border-color:var(--red);}
+  .tab.active .num{color:var(--accent); font-weight:600;}
+  .tab.active .dot{border-color:var(--accent);}
 
   .rail-foot{
     margin-top:auto;
@@ -393,19 +393,64 @@
     white-space:nowrap;
   }
 
+  .menu-toggle{
+    display:none;
+    background:none;
+    border:1px solid var(--rule-strong);
+    border-radius:6px;
+    width:34px; height:34px;
+    padding:0;
+    cursor:pointer;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    flex-direction:column;
+  }
+  .menu-toggle span{
+    display:block;
+    width:16px; height:1.5px;
+    background:var(--ink);
+  }
+  .menu-toggle:hover span{background:var(--accent);}
+
+  .rail-backdrop{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(10,13,18,.45);
+    z-index:3;
+  }
+
   @media (max-width:860px){
     .shell{grid-template-columns:1fr; max-width:100%;}
+    .menu-toggle{display:flex;}
     .tabrail{
-      position:static; height:auto; flex-direction:row; flex-wrap:wrap;
-      align-items:flex-start; padding:16px 20px; gap:6px;
+      position:fixed; top:0; right:0; height:100vh; width:min(78vw,300px);
+      flex-direction:column; align-items:stretch;
+      padding:20px 16px; gap:6px;
+      background:var(--paper); border-left:1px solid var(--rule-strong);
+      box-shadow:var(--shadow);
+      transform:translateX(100%);
+      transition:transform .2s ease;
+      z-index:4;
     }
-    .rail-head, .rail-foot{display:none;}
+    .tabrail.open{transform:translateX(0);}
+    .rail-backdrop.open{display:block;}
+    .rail-head{
+      writing-mode:horizontal-tb; transform:none;
+      font-size:13px; margin-bottom:10px; padding-right:0;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .rail-foot{
+      writing-mode:horizontal-tb; transform:none;
+      padding-top:16px; text-align:left;
+    }
+    #tabs{display:flex; flex-wrap:wrap; gap:6px;}
     .tab{border-radius:6px; border-right:1px solid var(--rule); width:auto;}
     .tab.active{width:auto;}
     .topbar, .reader{padding-left:20px; padding-right:20px;}
     .chap-folio{font-size:34px;}
   }
-  @media (prefers-reduced-motion:reduce){ .tab{transition:none;} }
+  @media (prefers-reduced-motion:reduce){ .tab{transition:none;} .tabrail{transition:none;} }
 </style>
 </head>
 <body>
@@ -415,6 +460,9 @@
     <div class="topbar">
       <span class="course-name" id="course-name">Chargement…</span>
       <button class="theme-toggle" id="theme-toggle" type="button">clair / sombre</button>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="sommaire" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
     <div class="reader">
       <article>
@@ -443,11 +491,12 @@
     </div>
   </main>
 
-  <aside class="tabrail">
+  <aside class="tabrail" id="tabrail">
     <div class="rail-head" id="rail-head">sommaire</div>
     <div id="tabs"></div>
     <div class="rail-foot" id="rail-foot"></div>
   </aside>
+  <div class="rail-backdrop" id="rail-backdrop"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
@@ -656,10 +705,30 @@
     });
   }
 
+  var tabrail = document.getElementById('tabrail');
+  var railBackdrop = document.getElementById('rail-backdrop');
+  var menuToggle = document.getElementById('menu-toggle');
+
+  function openRail(){
+    tabrail.classList.add('open');
+    railBackdrop.classList.add('open');
+    menuToggle.setAttribute('aria-expanded', 'true');
+  }
+  function closeRail(){
+    tabrail.classList.remove('open');
+    railBackdrop.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }
+  menuToggle.addEventListener('click', function(){
+    tabrail.classList.contains('open') ? closeRail() : openRail();
+  });
+  railBackdrop.addEventListener('click', closeRail);
+
   function goTo(i){
     if(i < 0 || i >= chapters.length) return;
     state.current = i;
     render(i);
+    closeRail();
   }
 
   btnDone.addEventListener('click', toggleDone);
