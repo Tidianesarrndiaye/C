@@ -57,20 +57,14 @@ cette machine). Chaque projet avec un lecteur/serveur local doit avoir son propr
 pouvoir tous tourner en même temps sans conflit — voir `educmathsplateforme` (`8743`) et `reseaux`
 (`8461`).
 
-## Idées pour plus tard (pas encore demandées, à proposer)
+## Historique design du lecteur
 
-- **Palette du lecteur** (`reader.html`, partagé avec `lpl/reseaux`) : la version actuelle (papier
-  quadrillé, accent rouge, onglets) plaît, mais Tidiane trouve que la toute première version —
-  publiée comme Artifact Claude sous
-  `https://claude.ai/code/artifact/10c8453a-c2d5-4c54-a1fa-b34c71f6523b` (fond sombre, accent bleu
-  cyan `#3fd6ce`, police IBM Plex) — était visuellement plus belle. Objectif pour une prochaine
-  session : proposer une piste qui reprend cette identité bleu/sombre plus soignée sans revenir aux
-  tics génériques repérés dans le premier jet (labels en petites capitales trackées, barre de
-  progression en %).
-- **Sidebar repliable sur mobile** : ajouter un bouton hamburger qui cache/affiche le sommaire
-  (actuellement les onglets à droite), pour que la lecture soit confortable sur téléphone.
-- Ne pas faire ces changements sans que Tidiane le redemande explicitement — il ne veut pas
-  superviser cette itération maintenant.
+La palette est passée du duo papier/rouge à une identité bleu-sombre (accent `#1f6e86` en clair,
+cyan `#3fd6ce` en sombre — proche de la toute première version publiée comme Artifact Claude,
+`https://claude.ai/code/artifact/10c8453a-c2d5-4c54-a1fa-b34c71f6523b`), tout en gardant la mise en
+page cahier (papier quadrillé, onglets, folio de chapitre) que Tidiane appréciait déjà. Le sommaire
+(`.tabrail`, partagé avec `lpl/reseaux`) est aussi devenu un tiroir accessible via un bouton
+hamburger sous 860px de large, pour une lecture confortable sur téléphone.
 
 ## Ce qu'il ne faut pas faire
 
