@@ -57,6 +57,21 @@ cette machine). Chaque projet avec un lecteur/serveur local doit avoir son propr
 pouvoir tous tourner en même temps sans conflit — voir `educmathsplateforme` (`8743`) et `reseaux`
 (`8461`).
 
+## Idées pour plus tard (pas encore demandées, à proposer)
+
+- **Palette du lecteur** (`reader.html`, partagé avec `lpl/reseaux`) : la version actuelle (papier
+  quadrillé, accent rouge, onglets) plaît, mais Tidiane trouve que la toute première version —
+  publiée comme Artifact Claude sous
+  `https://claude.ai/code/artifact/10c8453a-c2d5-4c54-a1fa-b34c71f6523b` (fond sombre, accent bleu
+  cyan `#3fd6ce`, police IBM Plex) — était visuellement plus belle. Objectif pour une prochaine
+  session : proposer une piste qui reprend cette identité bleu/sombre plus soignée sans revenir aux
+  tics génériques repérés dans le premier jet (labels en petites capitales trackées, barre de
+  progression en %).
+- **Sidebar repliable sur mobile** : ajouter un bouton hamburger qui cache/affiche le sommaire
+  (actuellement les onglets à droite), pour que la lecture soit confortable sur téléphone.
+- Ne pas faire ces changements sans que Tidiane le redemande explicitement — il ne veut pas
+  superviser cette itération maintenant.
+
 ## Ce qu'il ne faut pas faire
 
 - Ne pas renommer les fichiers de chapitre sans mettre à jour les liens `[...]​(NN-....md)` qui les
