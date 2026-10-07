@@ -11,12 +11,13 @@ complète (compilation Linux/WSL vs Windows/MSYS2, cycle `gcc` → exécution) e
 
 ```
 C/
-├── README.md
-├── CLAUDE.md                    ← ce fichier
-└── 01-introduction-au-c/
+├── README.md, CLAUDE.md
+├── reader.html                  ← lecteur local commun à tous les modules (voir plus bas)
+├── outils/serveur.py            ← sert le dépôt (port 8329)
+├── pyproject.toml, .python-version  ← environnement uv (aucune dépendance externe)
+└── 01-introduction-au-c/        ← un « module » de cours parmi d'autres à venir
     ├── README.md                ← sommaire des chapitres
     ├── 01-....md … 33-....md    ← un fichier par chapitre, même forme partout
-    ├── reader.html               ← lecteur local interactif (voir plus bas)
     ├── code/                    ← exemples .c compilables de chaque chapitre
     ├── exercices/
     └── reference/                ← fiches mots-clés, stdio.h, string.h, math.h...
@@ -24,7 +25,7 @@ C/
 
 ## Convention des chapitres
 
-Chaque `NN-slug.md` suit toujours la même forme, dont dépend le lecteur (`reader.html`) :
+Chaque `NN-slug.md` suit toujours la même forme, dont dépend le lecteur (`reader.html`, à la racine) :
 - Titre `# NN — Titre du chapitre` en première ligne.
 - Corps en Markdown normal (titres `##`/`###`, tableaux, blocs de code C).
 - Un bloc de navigation en toute fin de fichier, séparé du corps par une ligne `---` :
@@ -37,20 +38,22 @@ découvre les fichiers automatiquement.
 
 ## Le lecteur interactif (`reader.html`)
 
-Page HTML/CSS/JS autonome (pas de build, pas de dépendance à installer) qui affiche les chapitres
-un par un avec navigation Précédent/Suivant, sommaire cliquable et progression de lecture. Elle
-détecte les chapitres tout seule en lisant le listing de dossier fourni par un serveur HTTP local
-— rien à régénérer quand un chapitre est ajouté ou modifié.
+Même lecteur que `reseaux/` et `powershell/` (papier quadrillé, onglets numérotés, sommaire repliable,
+barre du haut fixe, interrupteur de thème en lampe, hamburger < 860 px, clair/sombre). Page HTML/CSS/JS
+autonome, sans build. Il vit **à la racine du dépôt** et détecte seul les « modules » : tout dossier
+contenant au moins un `NN-slug.md`. Un futur `02-…` apparaîtra tout seul (barre de modules dès 2 modules,
+`?m=<dossier>`) — rien à modifier. `marked` est chargé depuis cdnjs : internet requis pour le rendu.
 
-Lancer depuis `01-introduction-au-c/` :
+Lancer depuis la racine du dépôt :
 
 ```powershell
-python -m http.server 8329
+uv run python outils/serveur.py     # http://localhost:8329/reader.html
 ```
 
-puis ouvrir `http://localhost:8329/reader.html`. La progression (chapitres lus, position
-courante) est sauvegardée dans le `localStorage` du navigateur, propre à ce chemin de dossier —
-pas de fichier de progression à maintenir à la main.
+La progression (chapitres lus, position) est dans le `localStorage` du navigateur, avec une clé par module
+et par chemin. Les liens relatifs des chapitres (`reference/…`, autres chapitres) sont résolus depuis le
+dossier du module : ils doivent rester **relatifs au module**. Si le lecteur évolue dans `reseaux/` ou
+`powershell/`, reporter les changements ici à la main (les `reader.html` sont des copies indépendantes).
 
 **Port 8329** : volontairement non standard (ni `8000`/`8080`, déjà pris par d'autres projets sur
 cette machine). Chaque projet avec un lecteur/serveur local doit avoir son propre port dédié, pour

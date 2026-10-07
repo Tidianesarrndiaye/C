@@ -45,3 +45,7 @@ Thumbs.db
 01-introduction-au-c/code/02-etapes-compilation/hello.s
 01-introduction-au-c/code/02-etapes-compilation/hello
 01-introduction-au-c/code/02-etapes-compilation/hello.exe
+
+# Python (outils/serveur.py, géré par uv)
+__pycache__/
+.venv/

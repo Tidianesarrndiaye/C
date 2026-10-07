@@ -9,10 +9,11 @@ C/
 ├── README.md                  ← tu es ici
 ├── CLAUDE.md                  ← contexte du projet pour Claude
 ├── .gitignore                 ← ignore les binaires compilés
+├── reader.html                ← lecteur interactif commun à tous les modules (voir plus bas)
+├── outils/serveur.py          ← serveur local du lecteur (port 8329)
 └── 01-introduction-au-c/      ← parcours complet, calqué sur le tutoriel C de W3Schools
     ├── README.md              ← sommaire des chapitres
     ├── 01-…-33-….md           ← les chapitres, un fichier .md par chapitre
-    ├── reader.html            ← lecteur interactif (voir plus bas)
     ├── code/                  ← les exemples compilables (.c) de chaque chapitre
     │   └── 02-etapes-compilation/  ← démo Linux/Windows des 4 étapes de gcc (chap. 02)
     ├── exercices/             ← exercices à faire toi-même
@@ -72,10 +73,10 @@ Windows. `make` compile tout, `make run FILE=02_hello` compile et lance un fichi
 
 ## Lecteur interactif
 
-Depuis `01-introduction-au-c/` :
+Depuis la racine du dépôt (nécessite [uv](https://docs.astral.sh/uv/)) :
 
 ```powershell
-python -m http.server 8329
+uv run python outils/serveur.py
 ```
 
 puis ouvre `http://localhost:8329/reader.html` : les 33 chapitres s'affichent un par un avec

@@ -801,20 +801,33 @@
     });
   }
 
-  // Variante « un seul cours » : ce lecteur vit DANS le dossier des chapitres (alors que dans
-  // lpl/reseaux et lpl/powershell il est à la racine du dépôt et détecte plusieurs modules).
-  // Le « module » est donc simplement le dossier courant : '.'.
-  function discoverModules(){ return Promise.resolve(['.']); }
+  // Un module de cours est n'importe quel dossier à la racine du dépôt qui contient
+  // au moins un chapitre numéroté (NN-slug.md) — c'est ce qui permet à un futur module
+  // (02-..., 03-...) d'apparaître ici sans toucher à ce lecteur.
+  function discoverModules(){
+    return listDir('./').then(function(entries){
+      var folders = entries
+        .filter(function(href){ return /^[^\/?#.][^\/?#]*\/$/.test(href); })
+        .map(function(href){ return href.replace(/\/$/, ''); });
+      return Promise.all(folders.map(function(folder){
+        return listDir('./' + encodeURIComponent(folder) + '/')
+          .then(function(files){
+            return files.some(function(f){ return /^\d+-[^\/]+\.md$/i.test(f); }) ? folder : null;
+          })
+          .catch(function(){ return null; });
+      })).then(function(results){ return results.filter(Boolean).sort(); });
+    });
+  }
 
   function discoverChapters(module){
-    return listDir('./').then(function(entries){
+    return listDir('./' + encodeURIComponent(module) + '/').then(function(entries){
       var files = entries.filter(function(href){ return /^\d+-[^\/]+\.md$/i.test(href); });
       return sortByLeadingNumber(files);
     });
   }
 
   function loadCourseTitle(module){
-    return fetch('./README.md')
+    return fetch('./' + encodeURIComponent(module) + '/README.md')
       .then(function(res){ return res.ok ? res.text() : ''; })
       .then(function(md){
         var m = md.match(/^#\s+(.+)$/m);
@@ -1089,7 +1102,7 @@
     if(!modules.length){
       elRailHead.textContent = '—';
       elTitle.textContent = 'Aucun module trouvé';
-      elBody.innerHTML = '<div class="empty">Aucun fichier .md numéroté dans ce dossier.</div>';
+      elBody.innerHTML = '<div class="empty">Aucun dossier avec des chapitres numérotés (NN-slug.md) à la racine du dépôt.</div>';
       return;
     }
 
@@ -1099,7 +1112,7 @@
     currentModule = modules.indexOf(requested) !== -1 ? requested
       : (modules.indexOf(last) !== -1 ? last : modules[0]);
     try{ localStorage.setItem(LAST_MODULE_KEY, currentModule); }catch(e){}
-    STORE_KEY = 'md-reader-progress::' + location.pathname;
+    STORE_KEY = 'md-reader-progress::' + location.pathname + '::' + currentModule;
     state = loadState();
     buildModuleSwitcher(modules, currentModule);
 
@@ -1117,7 +1130,7 @@
 
       chapters = files.map(function(file){
         var m = file.match(/^(\d+)-/);
-        return { file: file, num: m ? m[1] : '', title: file.replace(/\.md$/,''), body: '', loaded: false };
+        return { file: currentModule + '/' + file, num: m ? m[1] : '', title: file.replace(/\.md$/,''), body: '', loaded: false };
       });
 
       elCourseName.textContent = courseTitle || document.title;
@@ -1137,7 +1150,7 @@
   }).catch(function(err){
     elRailHead.textContent = 'erreur';
     elTitle.textContent = 'Erreur';
-    elBody.innerHTML = '<div class="error">Impossible de lister le dossier (' + err.message + ').<br><br>Ce lecteur a besoin d\'un serveur HTTP local (le listing de dossier de <code>python -m http.server</code>). Lance-le depuis ce dossier :<br><code>python -m http.server 8329</code><br>puis ouvre <code>http://localhost:8329/reader.html</code>.</div>';
+    elBody.innerHTML = '<div class="error">Impossible de lister le dépôt (' + err.message + ').<br><br>Ce lecteur a besoin d\'un serveur HTTP local (le listing de dossier). Lance-le depuis la racine du dépôt :<br><code>uv run python outils/serveur.py</code><br>puis ouvre <code>http://localhost:8329/reader.html</code>.</div>';
   });
 })();
 </script>

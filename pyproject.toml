@@ -1,0 +1,7 @@
+[project]
+name = "c-lecteur"
+version = "0.1.0"
+description = "Serveur local du lecteur interactif du cours de C"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
