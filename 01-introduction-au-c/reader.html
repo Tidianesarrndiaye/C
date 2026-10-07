@@ -26,6 +26,8 @@
     --serif:'Newsreader', Georgia, 'Times New Roman', serif;
     --mono:'JetBrains Mono', 'SF Mono', Consolas, monospace;
     --grid-op: .05;
+    --lamp-on: 1;
+    --lamp-shade: #56657a; --lamp-rim: #8894a2;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -36,6 +38,8 @@
       --code-bg:#0a0d13; --code-ink:#dde3e8; --code-accent:#7fe0d8;
       --shadow:0 1px 1px rgba(0,0,0,.3), 0 6px 18px -10px rgba(0,0,0,.6);
       --grid-op: .08;
+      --lamp-on: 0;
+      --lamp-shade: #323a48; --lamp-rim: #424b5b;
     }
   }
   :root[data-theme="dark"]{
@@ -46,6 +50,8 @@
     --code-bg:#0a0d13; --code-ink:#dde3e8; --code-accent:#7fe0d8;
     --shadow:0 1px 1px rgba(0,0,0,.3), 0 6px 18px -10px rgba(0,0,0,.6);
     --grid-op: .08;
+    --lamp-on: 0;
+    --lamp-shade: #323a48; --lamp-rim: #424b5b;
   }
 
   *{box-sizing:border-box;}
@@ -66,15 +72,45 @@
     opacity:var(--grid-op);
     pointer-events:none;
   }
-  body > .shell{position:relative; z-index:1;}
+  body > .shell{position:relative;}
   body > *:not(.shell){ }
 
   .shell{
+    --rail-w:288px;
     display:grid;
-    grid-template-columns:minmax(0,1fr) 84px;
+    grid-template-columns:var(--rail-w) minmax(0,1fr);
     min-height:100vh;
-    max-width:1180px;
-    margin:0 auto;
+    transition:grid-template-columns .22s ease;
+  }
+  body.rail-collapsed .shell{--rail-w:0px; grid-template-columns:minmax(0,1fr);}
+
+  /* ---------- Module bar (n'apparaît que si plusieurs cours sont détectés) ---------- */
+  .module-bar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:20px 48px 0;
+  }
+  .module-pill{
+    font-family:var(--serif);
+    font-size:13.5px;
+    font-style:italic;
+    color:var(--ink-muted);
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding:6px 14px;
+    cursor:pointer;
+  }
+  .module-pill:hover{color:var(--accent); border-color:var(--accent);}
+  .module-pill.active{
+    color:var(--accent);
+    border-color:var(--accent);
+    background:var(--accent-soft);
+    font-weight:600;
+  }
+  @media (max-width:860px){
+    .module-bar{padding:16px 20px 0;}
   }
 
   /* ---------- Reading column ---------- */
@@ -84,38 +120,88 @@
     min-width:0;
   }
   .topbar{
+    position:sticky; top:0; z-index:1;
     display:flex;
-    align-items:baseline;
+    align-items:center;
     gap:14px;
-    padding:26px 48px 18px;
+    height:62px;
+    padding:0 48px;
+    background:var(--paper);
+    border-bottom:1px solid var(--rule);
+    transition:padding-left .22s ease;
   }
+  body.rail-collapsed .topbar{padding-left:68px;}
   .topbar .course-name{
     font-family:var(--serif);
     font-size:15px;
     font-style:italic;
     color:var(--ink-muted);
   }
+  /* Interrupteur à cordon (lampe de chevet) : on tire, la chaîne s'étire et rebondit */
   .theme-toggle{
     margin-left:auto;
-    font-family:var(--serif);
-    font-size:13px;
-    font-style:italic;
-    color:var(--ink-muted);
+    align-self:flex-start;
+    position:relative;
+    width:46px; height:62px;
+    padding:0;
     background:none;
     border:none;
-    border-bottom:1px solid var(--rule-strong);
-    padding:2px 0;
     cursor:pointer;
+    color:var(--ink-muted);
+    -webkit-tap-highlight-color:transparent;
   }
-  .theme-toggle:hover{color:var(--accent); border-color:var(--accent);}
+  .theme-toggle svg{display:block; width:46px; height:62px; overflow:visible; transform-origin:50% 0;}
+  .theme-toggle .chain{
+    stroke:currentColor; stroke-width:3.6; stroke-linecap:round; fill:none;
+    stroke-dasharray:.1 5.2;
+    transform-box:fill-box; transform-origin:50% 0;
+  }
+  .theme-toggle .pull{fill:var(--accent); stroke:var(--card); stroke-width:1.2;}
+  .theme-toggle .pull-ring{fill:none; stroke:var(--card); stroke-width:1.4; opacity:.7;}
+  .theme-toggle:hover{color:var(--accent);}
+  .theme-toggle:hover .pull{filter:brightness(1.12);}
+  .theme-toggle:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;}
+  .theme-toggle.pulled svg{animation:cord-swing .85s cubic-bezier(.3,.7,.4,1) both;}
+  .theme-toggle.pulled .chain{animation:cord-stretch .85s cubic-bezier(.3,.7,.4,1) both;}
+  .theme-toggle.pulled .handle{animation:handle-drop .85s cubic-bezier(.3,.7,.4,1) both;}
+  @keyframes cord-stretch{
+    0%{transform:scaleY(1)} 22%{transform:scaleY(1.7)} 48%{transform:scaleY(.88)}
+    68%{transform:scaleY(1.12)} 84%{transform:scaleY(.98)} 100%{transform:scaleY(1)}
+  }
+  @keyframes handle-drop{
+    0%{transform:translateY(0)} 22%{transform:translateY(12.6px)} 48%{transform:translateY(-2.2px)}
+    68%{transform:translateY(2.2px)} 84%{transform:translateY(-.4px)} 100%{transform:translateY(0)}
+  }
+  @keyframes bulb-flick{
+    0%,100%{filter:none} 30%{filter:brightness(.7)} 45%{filter:brightness(1.25)} 60%{filter:brightness(.9)}
+  }
+  .lamp-shade{fill:var(--lamp-shade);}
+  .lamp-rim{fill:var(--lamp-rim);}
+  .bulb-off{fill:var(--rule-strong);}
+  .bulb-on{fill:#ffd24d; opacity:var(--lamp-on);}
+  .lamp-glow{fill:url(#lampGlow); opacity:var(--lamp-on);}
+  .lamp-cone{fill:url(#lampCone); opacity:calc(var(--lamp-on) * .9);}
+  .theme-toggle.pulled .bulb-on{animation:bulb-flick .85s ease both;}
+  @keyframes cord-swing{
+    0%{transform:rotate(0)} 22%{transform:rotate(5deg)} 48%{transform:rotate(-4deg)}
+    68%{transform:rotate(2.5deg)} 84%{transform:rotate(-1deg)} 100%{transform:rotate(0)}
+  }
+  /* fondu doux des couleurs pendant le changement de thème */
+  html.theme-anim *, html.theme-anim *::before, html.theme-anim *::after{
+    transition:background-color .35s ease, color .35s ease, border-color .35s ease, fill .35s ease, opacity .35s ease !important;
+  }
+  @media (prefers-reduced-motion:reduce){
+    .theme-toggle.pulled svg, .theme-toggle.pulled .chain, .theme-toggle.pulled .handle{animation:none;}
+  }
 
   .reader{
     flex:1;
     padding:10px 48px 60px;
   }
   article{
-    max-width:660px;
+    max-width:940px;
   }
+  body.rail-collapsed article{margin:0 auto;}
   .chap-head{
     display:flex;
     align-items:flex-start;
@@ -147,7 +233,7 @@
     font-size:18px;
     line-height:1.75;
     color:var(--ink);
-    max-width:66ch;
+    max-width:84ch;
   }
   .prose h2{
     font-family:var(--serif);
@@ -193,6 +279,7 @@
   .prose blockquote p+p{margin-top:8px;}
 
   .code-wrap{
+    position:relative;
     margin:22px 0;
     border-radius:3px;
     overflow:hidden;
@@ -207,6 +294,25 @@
     padding:8px 16px 0;
     opacity:.65;
   }
+  .code-wrap .copy{
+    position:absolute;
+    top:6px; right:8px;
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:.04em;
+    color:var(--code-ink);
+    background:transparent;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:3px;
+    padding:3px 9px;
+    cursor:pointer;
+    opacity:.55;
+    transition:opacity .15s, color .15s, border-color .15s;
+  }
+  .code-wrap:hover .copy, .code-wrap .copy:focus-visible{opacity:1;}
+  .code-wrap .copy:hover{color:var(--code-accent);border-color:var(--code-accent);}
+  .code-wrap .copy.ok{opacity:1;color:var(--code-accent);border-color:var(--code-accent);}
+  .code-wrap:not(:has(.lang)) pre{padding-top:34px;}
   .prose pre{
     margin:0;
     background:var(--code-bg);
@@ -238,7 +344,7 @@
   .prose tr:last-child td{border-bottom:1px solid var(--rule-strong);}
 
   .done-row{
-    max-width:660px;
+    max-width:940px;
     margin-top:34px;
   }
   .done-btn{
@@ -283,7 +389,7 @@
   }
 
   .foot-nav{
-    max-width:660px;
+    max-width:940px;
     margin:52px 0 0;
     display:flex;
     justify-content:space-between;
@@ -323,145 +429,208 @@
   .empty, .loading, .error{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink-muted);padding:20px 0;}
   .error{color:var(--accent);}
 
-  /* ---------- Tab rail (sidebar as index-card tabs) ---------- */
+  /* ---------- Sidebar (sommaire repliable, à gauche) ---------- */
   .tabrail{
     position:sticky; top:0;
     height:100vh;
-    overflow-y:auto;
-    padding:26px 0 20px;
+    width:var(--rail-w);
+    overflow:hidden;
+    background:var(--card);
+    border-right:1px solid var(--rule-strong);
     display:flex;
     flex-direction:column;
-    align-items:flex-end;
-    gap:3px;
-    scrollbar-width:thin;
+    transition:width .22s ease;
+    z-index:2;
+  }
+  /* Replié (ou téléphone) : le panneau flotte au-dessus du contenu, glissé hors écran ;
+     il apparaît en aperçu (survol du bouton) ou ouvert (clic / tiroir mobile). */
+  body.rail-collapsed .tabrail{
+    position:fixed; top:0; left:0; width:288px;
+    transform:translateX(-102%);
+    transition:transform .2s ease, box-shadow .2s ease;
+    z-index:5;
+  }
+  body.rail-collapsed .tabrail.open{
+    transform:translateX(0);
+    box-shadow:0 10px 40px -8px rgba(0,0,0,.45);
+  }
+  .rail-inner{
+    width:288px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
   }
   .rail-head{
-    writing-mode:vertical-rl;
-    transform:rotate(180deg);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    height:62px;
+    padding:0 18px 0 68px;   /* laisse la place au bouton fixe en haut à gauche */
+    flex:none;
+  }
+  .rail-title{
+    flex:1;
+    min-width:0;
     font-family:var(--serif);
+    font-size:15px;
+    font-weight:600;
+    line-height:1.25;
+    color:var(--ink);
+  }
+  .rail-sub{
+    display:block;
     font-style:italic;
+    font-weight:400;
     font-size:12.5px;
     color:var(--ink-faint);
-    margin-bottom:16px;
-    padding-right:2px;
-    white-space:nowrap;
+    margin-top:2px;
+  }
+  .icon-btn{
+    flex:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:34px; height:34px;
+    background:none;
+    border:1px solid transparent;
+    border-radius:8px;
+    color:var(--ink-muted);
+    cursor:pointer;
+    padding:0;
+  }
+  .icon-btn:hover{background:var(--paper-2); color:var(--accent);}
+  .icon-btn svg{width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;}
+  #tabs{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:4px 10px 12px;
+    scrollbar-width:thin;
   }
   .tab{
     display:flex;
-    align-items:center;
-    gap:7px;
-    width:66px;
+    align-items:baseline;
+    gap:10px;
+    width:100%;
+    text-align:left;
     padding:8px 10px;
-    background:var(--card);
-    border:1px solid var(--rule);
-    border-right:none;
-    border-radius:6px 0 0 6px;
+    margin:0 0 2px;
+    background:none;
+    border:none;
+    border-radius:8px;
     cursor:pointer;
-    font-family:var(--mono);
+    font-family:var(--serif);
     color:var(--ink-muted);
-    transition:width .12s ease, background .12s ease, color .12s ease;
-    position:relative;
   }
-  .tab:hover{width:74px; color:var(--ink);}
-  .tab .num{font-size:13px; font-weight:500;}
-  .tab .dot{
-    width:6px; height:6px; border-radius:50%;
-    border:1.3px solid var(--rule-strong);
-    margin-left:auto;
+  .tab:hover{background:var(--paper-2); color:var(--ink);}
+  .tab .num{
     flex:none;
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-faint);
+    min-width:20px;
+  }
+  .tab .name{
+    flex:1;
+    min-width:0;
+    font-size:15px;
+    line-height:1.35;
+  }
+  .tab .dot{
+    flex:none;
+    align-self:center;
+    width:7px; height:7px; border-radius:50%;
+    border:1.3px solid var(--rule-strong);
   }
   .tab.read .dot{background:var(--accent); border-color:var(--accent);}
-  .tab.active{
-    width:84px;
-    background:var(--paper);
-    border-color:var(--rule-strong);
-    color:var(--accent);
-    box-shadow:var(--shadow);
-    z-index:2;
-  }
+  .tab.active{background:var(--accent-soft); color:var(--ink);}
   .tab.active .num{color:var(--accent); font-weight:600;}
+  .tab.active .name{font-weight:600;}
   .tab.active .dot{border-color:var(--accent);}
-
   .rail-foot{
-    margin-top:auto;
-    writing-mode:vertical-rl;
-    transform:rotate(180deg);
+    padding:12px 18px 16px;
+    border-top:1px solid var(--rule);
     font-family:var(--mono);
-    font-size:10px;
+    font-size:11px;
     color:var(--ink-faint);
-    padding-top:14px;
-    white-space:nowrap;
   }
-
   .menu-toggle{
-    display:none;
-    background:none;
-    border:1px solid var(--rule-strong);
-    border-radius:6px;
-    width:34px; height:34px;
-    padding:0;
-    cursor:pointer;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    flex-direction:column;
+    position:fixed; top:14px; left:14px;
+    z-index:6;
+    width:36px; height:36px;
   }
-  .menu-toggle span{
-    display:block;
-    width:16px; height:1.5px;
-    background:var(--ink);
-  }
-  .menu-toggle:hover span{background:var(--accent);}
-
   .rail-backdrop{
     display:none;
     position:fixed; inset:0;
     background:rgba(10,13,18,.45);
-    z-index:3;
+    z-index:4;
   }
 
   @media (max-width:860px){
-    .shell{grid-template-columns:1fr; max-width:100%;}
-    .menu-toggle{display:flex;}
+    .shell{grid-template-columns:minmax(0,1fr);}
     .tabrail{
-      position:fixed; top:0; right:0; height:100vh; width:min(78vw,300px);
-      flex-direction:column; align-items:stretch;
-      padding:20px 16px; gap:6px;
-      background:var(--paper); border-left:1px solid var(--rule-strong);
-      box-shadow:var(--shadow);
-      transform:translateX(100%);
-      transition:transform .2s ease;
-      z-index:4;
+      position:fixed; top:0; left:0; width:min(84vw,300px);
+      transform:translateX(-102%);
+      transition:transform .22s ease;
+      z-index:5;
+      box-shadow:none;
     }
-    .tabrail.open{transform:translateX(0);}
+    .tabrail.open{transform:translateX(0); box-shadow:0 10px 40px -8px rgba(0,0,0,.45);}
+    .topbar{padding-left:62px !important;}
     .rail-backdrop.open{display:block;}
-    .rail-head{
-      writing-mode:horizontal-tb; transform:none;
-      font-size:13px; margin-bottom:10px; padding-right:0;
-      display:flex; align-items:center; justify-content:space-between;
-    }
-    .rail-foot{
-      writing-mode:horizontal-tb; transform:none;
-      padding-top:16px; text-align:left;
-    }
-    #tabs{display:flex; flex-wrap:wrap; gap:6px;}
-    .tab{border-radius:6px; border-right:1px solid var(--rule); width:auto;}
-    .tab.active{width:auto;}
-    .topbar, .reader{padding-left:20px; padding-right:20px;}
+    .rail-inner{width:100%;}
+    .topbar{padding-right:20px;}
+    .reader{padding-left:20px; padding-right:20px;}
     .chap-folio{font-size:34px;}
   }
-  @media (prefers-reduced-motion:reduce){ .tab{transition:none;} .tabrail{transition:none;} }
+  @media (prefers-reduced-motion:reduce){ .shell, .tabrail{transition:none;} }
 </style>
 </head>
 <body>
 
+<div class="module-bar" id="module-bar" style="display:none;"></div>
+<button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Afficher le sommaire" aria-expanded="true" title="Sommaire">
+  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg>
+</button>
 <div class="shell">
+  <aside class="tabrail" id="tabrail" aria-label="Sommaire">
+    <div class="rail-inner">
+      <div class="rail-head">
+        <div class="rail-title"><span id="rail-course">Cours</span><span class="rail-sub" id="rail-head"></span></div>
+      </div>
+      <div id="tabs"></div>
+      <div class="rail-foot" id="rail-foot"></div>
+    </div>
+  </aside>
   <main>
     <div class="topbar">
       <span class="course-name" id="course-name">Chargement…</span>
-      <button class="theme-toggle" id="theme-toggle" type="button">clair / sombre</button>
-      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="sommaire" aria-expanded="false">
-        <span></span><span></span><span></span>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Changer de thème (clair / sombre)" title="Tirer pour changer de thème">
+        <svg viewBox="0 0 46 62" aria-hidden="true">
+          <defs>
+            <radialGradient id="lampGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#ffd24d" stop-opacity=".95"/>
+              <stop offset=".45" stop-color="#ffd24d" stop-opacity=".35"/>
+              <stop offset="1" stop-color="#ffd24d" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="lampCone" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffd24d" stop-opacity=".38"/>
+              <stop offset="1" stop-color="#ffd24d" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="lamp-cone" d="M17 22 L29 22 L41 62 L5 62 Z"/>
+          <circle class="lamp-glow" cx="23" cy="22" r="20"/>
+          <rect class="lamp-rim" x="21" y="-4" width="4" height="6" rx="1"/>
+          <path class="lamp-shade" d="M9 20 Q9 3 23 3 Q37 3 37 20 Z"/>
+          <rect class="lamp-rim" x="7" y="19" width="32" height="3" rx="1.5"/>
+          <circle class="bulb-off" cx="23" cy="25.5" r="4.2"/>
+          <circle class="bulb-on" cx="23" cy="25.5" r="4.2"/>
+          <path class="chain" d="M23 30V47"/>
+          <g class="handle">
+            <rect class="pull" x="17.5" y="48" width="11" height="13" rx="5.5"/>
+            <path class="pull-ring" d="M20 52.5h6M20 56.5h6"/>
+          </g>
+        </svg>
       </button>
     </div>
     <div class="reader">
@@ -491,26 +660,23 @@
     </div>
   </main>
 
-  <aside class="tabrail" id="tabrail">
-    <div class="rail-head" id="rail-head">sommaire</div>
-    <div id="tabs"></div>
-    <div class="rail-foot" id="rail-foot"></div>
-  </aside>
-  <div class="rail-backdrop" id="rail-backdrop"></div>
 </div>
+<div class="rail-backdrop" id="rail-backdrop"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script>
 (function(){
-  var STORE_KEY = 'md-reader-progress::' + location.pathname;
   var THEME_KEY = 'md-reader-theme';
+  var LAST_MODULE_KEY = 'md-reader-last-module';
 
+  var elModuleBar = document.getElementById('module-bar');
   var elTabs = document.getElementById('tabs');
   var elTitle = document.getElementById('chap-title');
   var elFolio = document.getElementById('chap-folio');
   var elBody = document.getElementById('chap-body');
   var elCourseName = document.getElementById('course-name');
   var elRailHead = document.getElementById('rail-head');
+  var elRailCourse = document.getElementById('rail-course');
   var elRailFoot = document.getElementById('rail-foot');
   var footNav = document.getElementById('foot-nav');
   var btnPrev = document.getElementById('btn-prev');
@@ -530,11 +696,13 @@
     }catch(e){ return {current:0, read:[]}; }
   }
   function saveState(s){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(s)); }catch(e){} }
-  var state = loadState();
+  // Le module actif n'est connu qu'après la découverte (voir plus bas) : l'état réel
+  // n'est chargé qu'à ce moment-là, une fois STORE_KEY calculée pour ce module.
+  var state = {current:0, read:[]};
 
   marked.setOptions({ gfm:true, breaks:false });
 
-  function renderMarkdown(md){
+  function renderMarkdown(md, baseFile){
     var html = marked.parse(md);
     var wrap = document.createElement('div');
     wrap.innerHTML = html;
@@ -560,8 +728,36 @@
         l.textContent = lang;
         d.appendChild(l);
       }
+      var c = document.createElement('button');
+      c.type = 'button';
+      c.className = 'copy';
+      c.textContent = 'copier';
+      c.setAttribute('aria-label', 'Copier le code');
+      d.appendChild(c);
       d.appendChild(pre);
     });
+    // Les liens relatifs des .md sont écrits par rapport au dossier du chapitre
+    // (ex. 02-....md, reference/), alors que reader.html vit à la racine du dépôt :
+    // tels quels, ils pointeraient vers /02-....md → 404. On les résout donc depuis
+    // le dossier du fichier ; un lien vers un chapitre du module ouvre ce chapitre
+    // dans le lecteur (data-chapter, intercepté plus bas) au lieu du .md brut.
+    if(baseFile){
+      var base = new URL(baseFile, location.href);
+      wrap.querySelectorAll('a[href]').forEach(function(a){
+        var href = a.getAttribute('href');
+        if(/^([a-z][a-z0-9+.-]*:|#|\/)/i.test(href)) return;
+        var url = new URL(href, base);
+        a.setAttribute('href', url.pathname + url.search + url.hash);
+        var path = decodeURIComponent(url.pathname);
+        for(var i = 0; i < chapters.length; i++){
+          if(new URL(chapters[i].file, location.href).pathname === url.pathname
+             || '/' + chapters[i].file === path){
+            a.setAttribute('data-chapter', i);
+            break;
+          }
+        }
+      });
+    }
     return wrap.innerHTML;
   }
 
@@ -584,28 +780,40 @@
     return { num: fallbackNum, title: h1 };
   }
 
-  function discoverChapters(){
-    return fetch('./')
+  function listDir(path){
+    return fetch(path)
       .then(function(res){
         if(!res.ok) throw new Error('directory listing HTTP ' + res.status);
         return res.text();
       })
       .then(function(html){
         var doc = new DOMParser().parseFromString(html, 'text/html');
-        var links = Array.prototype.slice.call(doc.querySelectorAll('a[href]'));
-        var files = links
-          .map(function(a){ return decodeURIComponent(a.getAttribute('href')); })
-          .filter(function(href){ return /^\d+-[^\/]+\.md$/i.test(href); })
-          .sort(function(a, b){
-            var na = parseInt(a.match(/^(\d+)/)[1], 10);
-            var nb = parseInt(b.match(/^(\d+)/)[1], 10);
-            return na - nb;
-          });
-        return files;
+        return Array.prototype.slice.call(doc.querySelectorAll('a[href]'))
+          .map(function(a){ return decodeURIComponent(a.getAttribute('href')); });
       });
   }
 
-  function loadCourseTitle(){
+  function sortByLeadingNumber(list){
+    return list.slice().sort(function(a, b){
+      var na = parseInt(a.match(/^(\d+)/)[1], 10);
+      var nb = parseInt(b.match(/^(\d+)/)[1], 10);
+      return na - nb;
+    });
+  }
+
+  // Variante « un seul cours » : ce lecteur vit DANS le dossier des chapitres (alors que dans
+  // lpl/reseaux et lpl/powershell il est à la racine du dépôt et détecte plusieurs modules).
+  // Le « module » est donc simplement le dossier courant : '.'.
+  function discoverModules(){ return Promise.resolve(['.']); }
+
+  function discoverChapters(module){
+    return listDir('./').then(function(entries){
+      var files = entries.filter(function(href){ return /^\d+-[^\/]+\.md$/i.test(href); });
+      return sortByLeadingNumber(files);
+    });
+  }
+
+  function loadCourseTitle(module){
     return fetch('./README.md')
       .then(function(res){ return res.ok ? res.text() : ''; })
       .then(function(md){
@@ -616,6 +824,8 @@
   }
 
   var chapters = [];
+  var currentModule = '';
+  var STORE_KEY = '';
 
   function buildTabs(){
     elTabs.innerHTML = '';
@@ -625,7 +835,9 @@
       btn.type = 'button';
       btn.dataset.idx = i;
       btn.title = ch.title;
-      btn.innerHTML = '<span class="num">'+ch.num+'</span><span class="dot"></span>';
+      btn.innerHTML = '<span class="num"></span><span class="name"></span><span class="dot"></span>';
+      btn.querySelector('.num').textContent = ch.num;
+      btn.querySelector('.name').textContent = ch.title;
       btn.addEventListener('click', function(){ goTo(i); });
       elTabs.appendChild(btn);
     });
@@ -636,6 +848,7 @@
       var i = Number(el.dataset.idx);
       el.classList.toggle('active', i === state.current);
       el.classList.toggle('read', state.read.indexOf(i) !== -1);
+      if(i === state.current && el.scrollIntoView) el.scrollIntoView({block:'nearest'});
     });
   }
 
@@ -682,10 +895,10 @@
 
     ensureLoaded(i).then(function(){
       var tab = elTabs.querySelector('.tab[data-idx="'+i+'"]');
-      if(tab) tab.title = ch.title;
+      if(tab){ tab.title = ch.title; var nm = tab.querySelector('.name'); if(nm) nm.textContent = ch.title; }
 
       elTitle.textContent = ch.title;
-      elBody.innerHTML = renderMarkdown(ch.body);
+      elBody.innerHTML = renderMarkdown(ch.body, ch.file);
 
       footNav.style.display = 'flex';
       doneRow.style.display = 'block';
@@ -709,27 +922,105 @@
   var railBackdrop = document.getElementById('rail-backdrop');
   var menuToggle = document.getElementById('menu-toggle');
 
-  function openRail(){
-    tabrail.classList.add('open');
-    railBackdrop.classList.add('open');
-    menuToggle.setAttribute('aria-expanded', 'true');
-  }
-  function closeRail(){
+  var RAIL_KEY = 'md-reader-rail-collapsed';
+  var mobileMq = window.matchMedia('(max-width:860px)');
+  var hoverMq = window.matchMedia('(hover:hover)');
+  var peekTimer = null;
+  var suppressPeek = false;
+
+  function isCollapsed(){ return document.body.classList.contains('rail-collapsed'); }
+  function setCollapsed(c, persist){
+    document.body.classList.toggle('rail-collapsed', c);
     tabrail.classList.remove('open');
     railBackdrop.classList.remove('open');
-    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-expanded', c ? 'false' : 'true');
+    menuToggle.title = c ? 'Afficher le sommaire' : 'Masquer le sommaire';
+    if(persist){ try{ localStorage.setItem(RAIL_KEY, c ? '1' : '0'); }catch(e){} }
   }
+  function openRail(){
+    clearTimeout(peekTimer);
+    tabrail.classList.add('open');
+    if(mobileMq.matches) railBackdrop.classList.add('open');
+  }
+  function closeRail(){
+    clearTimeout(peekTimer);
+    tabrail.classList.remove('open');
+    railBackdrop.classList.remove('open');
+  }
+  function scheduleClose(){
+    clearTimeout(peekTimer);
+    peekTimer = setTimeout(closeRail, 220);
+  }
+  // Sur téléphone le panneau est toujours un tiroir, quel que soit l'état mémorisé.
+  function syncMode(){
+    if(mobileMq.matches){ document.body.classList.add('rail-collapsed'); closeRail(); }
+    else { var saved = null; try{ saved = localStorage.getItem(RAIL_KEY); }catch(e){} setCollapsed(saved === '1', false); }
+  }
+  syncMode();
+  if(mobileMq.addEventListener) mobileMq.addEventListener('change', syncMode);
+
   menuToggle.addEventListener('click', function(){
-    tabrail.classList.contains('open') ? closeRail() : openRail();
+    if(mobileMq.matches){ tabrail.classList.contains('open') ? closeRail() : openRail(); return; }
+    if(isCollapsed()){ setCollapsed(false, true); }                 // épingler : le panneau pousse le contenu
+    else { setCollapsed(true, true); suppressPeek = true; }         // replier (sans ré-aperçu tant que la souris reste dessus)
   });
+  // Aperçu au survol, comme claude.ai : le panneau flotte tant que la souris est sur le bouton ou sur lui.
+  menuToggle.addEventListener('mouseenter', function(){
+    if(!mobileMq.matches && hoverMq.matches && isCollapsed() && !suppressPeek) openRail();
+  });
+  menuToggle.addEventListener('mouseleave', function(){
+    suppressPeek = false;
+    if(!mobileMq.matches && isCollapsed()) scheduleClose();
+  });
+  tabrail.addEventListener('mouseenter', function(){ if(isCollapsed()) clearTimeout(peekTimer); });
+  tabrail.addEventListener('mouseleave', function(){ if(!mobileMq.matches && isCollapsed()) scheduleClose(); });
   railBackdrop.addEventListener('click', closeRail);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeRail(); });
 
   function goTo(i){
     if(i < 0 || i >= chapters.length) return;
     state.current = i;
     render(i);
-    closeRail();
+    if(isCollapsed()) closeRail();
   }
+
+  // navigator.clipboard n'existe qu'en contexte sécurisé (localhost/HTTPS) : ouvert depuis
+  // un autre appareil du réseau (http://192.168.x.x:8329), on retombe sur execCommand.
+  function copyText(text){
+    if(navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function(resolve, reject){
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try{ ok = document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('copie impossible'));
+    });
+  }
+
+  elBody.addEventListener('click', function(e){
+    var btn = e.target.closest('.code-wrap .copy');
+    if(btn){
+      var code = btn.parentNode.querySelector('pre');
+      copyText(code.textContent.replace(/\n$/, '')).then(function(){
+        btn.textContent = 'copié ✓';
+        btn.classList.add('ok');
+      }, function(){
+        btn.textContent = 'échec';
+      });
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function(){ btn.textContent = 'copier'; btn.classList.remove('ok'); }, 1600);
+      return;
+    }
+    var a = e.target.closest('a[data-chapter]');
+    if(!a || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    e.preventDefault();
+    goTo(+a.getAttribute('data-chapter'));
+  });
 
   btnDone.addEventListener('click', toggleDone);
   btnPrev.addEventListener('click', function(){ goTo(state.current - 1); });
@@ -740,53 +1031,113 @@
   });
 
   var themeBtn = document.getElementById('theme-toggle');
+  var darkMq = window.matchMedia('(prefers-color-scheme: dark)');
   function applyTheme(t){
     if(t) document.documentElement.setAttribute('data-theme', t);
     else document.documentElement.removeAttribute('data-theme');
+  }
+  function isDark(){
+    var t = document.documentElement.getAttribute('data-theme');
+    return t ? t === 'dark' : darkMq.matches;
   }
   var savedTheme = null;
   try{ savedTheme = localStorage.getItem(THEME_KEY); }catch(e){}
   if(savedTheme) applyTheme(savedTheme);
   themeBtn.addEventListener('click', function(){
-    var current = document.documentElement.getAttribute('data-theme');
-    var next = current === 'dark' ? 'light' : (current === 'light' ? null : 'dark');
+    // petit « clic » de lampe : on rejoue l'animation de traction à chaque appui
+    themeBtn.classList.remove('pulled'); void themeBtn.offsetWidth; themeBtn.classList.add('pulled');
+    var root = document.documentElement;
+    root.classList.add('theme-anim');
+    clearTimeout(themeBtn._t); themeBtn._t = setTimeout(function(){ root.classList.remove('theme-anim'); }, 450);
+    var next = isDark() ? 'light' : 'dark';
     applyTheme(next);
-    try{ localStorage.setItem(THEME_KEY, next || ''); }catch(e){}
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+  });
+  themeBtn.addEventListener('animationend', function(e){
+    if(e.target === themeBtn.querySelector('svg')) themeBtn.classList.remove('pulled');
   });
 
-  Promise.all([discoverChapters(), loadCourseTitle()]).then(function(results){
-    var files = results[0];
-    var courseTitle = results[1];
+  function getRequestedModule(){
+    try{ return new URLSearchParams(location.search).get('m') || ''; }
+    catch(e){ return ''; }
+  }
 
-    if(!files.length){
-      elTabs.innerHTML = '';
+  function prettyModuleName(folder){
+    var s = folder.replace(/^\d+-/, '').replace(/-/g, ' ');
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  // La barre de modules ne s'affiche que s'il y a plusieurs cours à choisir : avec un
+  // seul module (le cas aujourd'hui), le lecteur a exactement le même rendu qu'avant.
+  function buildModuleSwitcher(modules, active){
+    elModuleBar.innerHTML = '';
+    if(modules.length < 2){ elModuleBar.style.display = 'none'; return; }
+    elModuleBar.style.display = 'flex';
+    modules.forEach(function(m){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'module-pill' + (m === active ? ' active' : '');
+      btn.textContent = prettyModuleName(m);
+      btn.addEventListener('click', function(){
+        if(m !== active) location.href = 'reader.html?m=' + encodeURIComponent(m);
+      });
+      elModuleBar.appendChild(btn);
+    });
+  }
+
+  discoverModules().then(function(modules){
+    if(!modules.length){
       elRailHead.textContent = '—';
-      elTitle.textContent = 'Aucun chapitre trouvé';
-      elBody.innerHTML = '<div class="empty">Aucun fichier .md numéroté dans ce dossier.<br>Lance ce lecteur avec un serveur local pointé sur le dossier des chapitres (ex: <code>python -m http.server</code>).</div>';
+      elTitle.textContent = 'Aucun module trouvé';
+      elBody.innerHTML = '<div class="empty">Aucun fichier .md numéroté dans ce dossier.</div>';
       return;
     }
 
-    chapters = files.map(function(file){
-      var m = file.match(/^(\d+)-/);
-      return { file: file, num: m ? m[1] : '', title: file.replace(/\.md$/,''), body: '', loaded: false };
-    });
+    var requested = getRequestedModule();
+    var last = null;
+    try{ last = localStorage.getItem(LAST_MODULE_KEY); }catch(e){}
+    currentModule = modules.indexOf(requested) !== -1 ? requested
+      : (modules.indexOf(last) !== -1 ? last : modules[0]);
+    try{ localStorage.setItem(LAST_MODULE_KEY, currentModule); }catch(e){}
+    STORE_KEY = 'md-reader-progress::' + location.pathname;
+    state = loadState();
+    buildModuleSwitcher(modules, currentModule);
 
-    elCourseName.textContent = courseTitle || document.title;
-    elRailHead.textContent = chapters.length + ' chapitres';
-    elRailFoot.textContent = (state.read.length) + ' lus';
+    return Promise.all([discoverChapters(currentModule), loadCourseTitle(currentModule)]).then(function(results){
+      var files = results[0];
+      var courseTitle = results[1];
 
-    // Précharge tous les chapitres (fichiers courts) pour connaître leurs vrais titres
-    // dès le départ — sinon le libellé "suivant"/"précédent" affiche le nom de fichier
-    // brut tant que ce chapitre n'a pas été ouvert.
-    return Promise.all(chapters.map(function(ch, i){ return ensureLoaded(i); })).then(function(){
-      buildTabs();
-      if(state.current >= chapters.length) state.current = 0;
-      render(state.current);
+      if(!files.length){
+        elTabs.innerHTML = '';
+        elRailHead.textContent = '—';
+        elTitle.textContent = 'Aucun chapitre trouvé';
+        elBody.innerHTML = '<div class="empty">Aucun fichier .md numéroté dans ' + currentModule + '/.</div>';
+        return;
+      }
+
+      chapters = files.map(function(file){
+        var m = file.match(/^(\d+)-/);
+        return { file: file, num: m ? m[1] : '', title: file.replace(/\.md$/,''), body: '', loaded: false };
+      });
+
+      elCourseName.textContent = courseTitle || document.title;
+      elRailCourse.textContent = courseTitle || document.title;
+      elRailHead.textContent = chapters.length + ' chapitres';
+      elRailFoot.textContent = (state.read.length) + ' lus';
+
+      // Précharge tous les chapitres (fichiers courts) pour connaître leurs vrais titres
+      // dès le départ — sinon le libellé "suivant"/"précédent" affiche le nom de fichier
+      // brut tant que ce chapitre n'a pas été ouvert.
+      return Promise.all(chapters.map(function(ch, i){ return ensureLoaded(i); })).then(function(){
+        buildTabs();
+        if(state.current >= chapters.length) state.current = 0;
+        render(state.current);
+      });
     });
   }).catch(function(err){
     elRailHead.textContent = 'erreur';
     elTitle.textContent = 'Erreur';
-    elBody.innerHTML = '<div class="error">Impossible de lister le dossier (' + err.message + ').<br><br>Ce lecteur a besoin d\'un serveur HTTP local (le listing de dossier de <code>python -m http.server</code>). Lance-le depuis ce dossier :<br><code>python -m http.server 8000</code><br>puis ouvre <code>http://localhost:8000/reader.html</code>.</div>';
+    elBody.innerHTML = '<div class="error">Impossible de lister le dossier (' + err.message + ').<br><br>Ce lecteur a besoin d\'un serveur HTTP local (le listing de dossier de <code>python -m http.server</code>). Lance-le depuis ce dossier :<br><code>python -m http.server 8329</code><br>puis ouvre <code>http://localhost:8329/reader.html</code>.</div>';
   });
 })();
 </script>
